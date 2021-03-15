@@ -65,9 +65,9 @@ contract burn_token_v2 is SafeMath{
     bool public is_upgrade = true;//是否开启老合约升级到新合约
     bool public is_mint = false;//是否开启挖矿
     
-    uint public anti_bot = 100e6;//如果v1用户usdt余额小于这个值，不能挖矿
+    uint public anti_bot = 100e6;//如果v1用户qusdt余额小于这个值，不能挖矿
     uint public min_gasprice = 1 gwei;//最低gas价格
-    address public requireToken = 0xDF0e293CC3c7bA051763FF6b026DA0853D446E38;//usdt
+    address public requireToken = 0xDF0e293CC3c7bA051763FF6b026DA0853D446E38;//qusdt合约地址
 
 
     /* This creates an array with all balances */
@@ -123,21 +123,21 @@ contract burn_token_v2 is SafeMath{
 
     receive() payable external {
     }
-    
+    //管理员可以提出转出合约地址里的QKI
     function withdraw(uint amount) public {
         require(msg.sender == owner);
         owner.transfer(amount);
     }
 
-
+//托管质押的QUSDT
     function depositToken(address token,uint256 amount) public {
         TransferHelper.safeTransferFrom(token, msg.sender, address(this), amount);
         TokenBalanceOf[msg.sender][token] += amount;
         emit Deposit(msg.sender,token, amount);
     }
-
+//提现已质押的QUSDT
     function withdrawToken(address token,uint256 amount) public {
-        require(block.timestamp - last_miner[msg.sender] >= 86400);//挖矿24小时后才能提交
+        require(block.timestamp - last_miner[msg.sender] >= 86400);//提现已质押的QUSDT需要在挖矿24小时后才能提交
         require(TokenBalanceOf[msg.sender][token] >= amount);
         TokenBalanceOf[msg.sender][token] -= amount;
         TransferHelper.safeTransfer(token,msg.sender,amount);
@@ -368,18 +368,18 @@ contract burn_token_v2 is SafeMath{
         if(tx.gasprice < min_gasprice) revert("min_gasprice");
         require(power[msg.sender] == 0);//零算力账号才可以
         require(is_upgrade);//需要开启空投
-        uint256 hbt_power = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).power(msg.sender);
-        if(hbt_power > 100)//老合约没有算力就不用升级
+        uint256 qbt_power = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).power(msg.sender);
+        if(qbt_power > 100)//老合约没有算力就不用升级
         {
             power[msg.sender] = hbt_power;
-            totalPower += hbt_power;
+            totalPower += qbt_power;
             totalUsersAmount++;
         }
-        address hbt_invite  = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).invite(msg.sender);
-        if(hbt_invite != address(0))
+        address qbt_invite  = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).invite(msg.sender);
+        if(qbt_invite != address(0))
         {
             invite[msg.sender] = hbt_invite;//记录邀请人
-            inviteCount[hbt_invite] += 1;//邀请人的下级数加一
+            inviteCount[qbt_invite] += 1;//邀请人的下级数加一
         }
     }
     
@@ -396,20 +396,12 @@ contract burn_token_v2 is SafeMath{
         require(is_upgrade);
         is_upgrade = false;
     }
-    
-
-    //设置一个值，如果用户的token余额小于这个值，而且算力小于500，不能挖矿，限制刷子
+     //设置挖矿门槛，如果用户的抵押的QUSDT余额小于这个值，而且算力小于500，不能挖矿，限制刷子
     function set_anti_bot(uint _value) public{
         require(msg.sender == owner);
         anti_bot = _value;
     }
     
-    //设置质押的token，后面可能会换成husd
-    function set_require_token(address token) public{
-        require(msg.sender == owner);
-        requireToken = token;
-    }
-
     //设置一个值，如果用户调用gasprice小于这个值，就提交失败，限制刷子
     function set_min_gasprice(uint _value) public{
         require(msg.sender == owner);
@@ -435,7 +427,7 @@ contract burn_token_v2 is SafeMath{
         inviteCount[invite_address] += 1;//邀请人的下级数加一
         return true;
     }
-    
+    //挖矿
     function mint() public returns (bool success){
         require(is_mint,"not start mint");
         require(power[msg.sender] > 0);//算力不能为零
@@ -446,7 +438,7 @@ contract burn_token_v2 is SafeMath{
         if(power[msg.sender] < 500 * 1e3)
         {
             scale = 20;
-            //用户合约内锁仓token余额小于一个值，就不能挖矿
+            //用户合约内锁仓qusdt余额小于一个值，就不能挖矿
             require(TokenBalanceOf[msg.sender][requireToken] >= anti_bot,"token too low");
         }
         else if(power[msg.sender] < 5000* 1e3)
@@ -470,7 +462,7 @@ contract burn_token_v2 is SafeMath{
         
         if(miner_days > 5)
         {
-            miner_days = 5;//单次最多领取7天的
+            miner_days = 5;//单次最多领取5天的
         }
         
         //第一次挖矿只能1天
@@ -496,3 +488,4 @@ contract burn_token_v2 is SafeMath{
         return true;
     }
 }
+//预祝夸克BT分叉会越来越好，做大做强
