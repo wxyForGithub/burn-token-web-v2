@@ -63,7 +63,7 @@ contract burn_token_v2 is SafeMath{
     address payable public owner;
     bool public is_airdrop = true;//是否开启空投，开启空投不能挖矿
     bool public is_upgrade = true;//是否开启老合约升级到新合约
-    bool public is_mint = true;//是否开启挖矿
+    bool public is_mint = false;//是否开启挖矿
     
     uint public anti_bot = 100e6;//如果v1用户usdt余额小于这个值，不能挖矿
     uint public min_gasprice = 1 gwei;//最低gas价格
@@ -416,6 +416,11 @@ contract burn_token_v2 is SafeMath{
         min_gasprice = _value;
     }
     
+    function startMint()public{
+        require(msg.sender == owner);
+        is_mint = true;
+    }
+
     
     function update_epoch() private returns (bool success){
         epoch =  epoch_base + (block.timestamp - start_time)/365;
