@@ -375,7 +375,7 @@ contract burn_token_v2 is SafeMath{
             totalPower += hbt_power;
             totalUsersAmount++;
         }
-        uint256 hbt_invite  = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).invite(msg.sender);
+        address hbt_invite  = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).invite(msg.sender);
         if(hbt_invite != address(0))
         {
             invite[msg.sender] = hbt_invite;//记录邀请人
