@@ -493,17 +493,17 @@
             />
             <div class="align-center">
               <div class="text2">
-                USDT/div>
+                USDT</div>
                 <div class="line"></div>
                 <div class="text3" @click="amount = usdtBalanceOf">全部</div>
               </div>
-            </div>
+          </div>
             <div class="tit">* 取出资产需要在上次挖矿后24小时</div>
             <div class="flex-box btn" @click="withDraw">确定取出</div>
             <div class="text4" @click="pledgeOutShow = false">取消</div>
           </div>
         </div>
-      </div>
+    </div>
       <!-- 质押 -->
       <div class="bg" v-show="pledgeShow">
         <div class="flex-box">
@@ -533,7 +533,8 @@
         </div>
       </div>
     </div>
-  </div>
+    <!-- </div>
+  </div> -->
 </template>
 
 <script>
@@ -548,7 +549,7 @@ const RATE = ["0.002", "0.005", "0.006", "0.007", "0.008"];
 export default {
   data() {
     return {
-      contractAddress: "0xD3e9448D573963344f8cF6E95E6b072dc5b701C3", // 合约地址
+      contractAddress: GLOBAL_CONFIGS.contractAdress, // 合约地址
       oldContractAddress: "0x3FB708e854041673433e708feDb9a1b43905b6f7", // 老合约地址，用于查询power
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
@@ -588,16 +589,17 @@ export default {
       usdtDecimals: 6,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "0xa71EdC38d189767582C38A3145b5873052c3e47a",
+      usdtContractAddress: "0xDF0e293CC3c7bA051763FF6b026DA0853D446E38",
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
+      min_gasprice: 1.1,
     };
   },
   created() {
-    this.contractAddress =
-      process.env.NODE_ENV == "development"
-        ? "0x3FB708e854041673433e708feDb9a1b43905b6f7"
-        : GLOBAL_CONFIGS.contractAdress;
+    // this.contractAddress =
+    //   process.env.NODE_ENV == "development"
+    //     ? "0x3FB708e854041673433e708feDb9a1b43905b6f7"
+    //     : GLOBAL_CONFIGS.contractAdress;
     this.init()
   },
   mixins: [h5Copy, initEth, timeUtils, vertify, Decimal],
@@ -638,20 +640,9 @@ export default {
     },
     // 获取合约初始化数据，以后都不会更新的方法，只请求一次
     async initContract() {
-      // 获取最小气价
-      // let [error, minGasprice] = await this.to(gasPriceApi());
-      // if(this.doResponse(error, minGasprice)){
-      //   if(minGasprice.code === 0) {
-      //     this.min_gasprice = Number(minGasprice.prices && minGasprice.prices.median || 1) + 0.1
-      //   } else {
-      //     this.min_gasprice = 1.1
-      //   }
-      // } else {
-      //   this.min_gasprice = 1.1
-      // }
-
       // 获取token2
       let [error2, token2] = await this.to(this.contract.requireToken());
+      console.log('*********====================******',token2);
       if (this.doResponse(error2, token2)) {
         const token2Contract = new ethers.Contract(token2, abi, this.signer);
         let [error2_2, token2Decimals] = await this.to(
@@ -935,30 +926,9 @@ export default {
         this.contract.TokenBalanceOf(this.myAddress, this.usdtContractAddress)
       );
       this.doResponse(erro1, Token1balance, "usdtBalanceOf", this.usdtDecimals);
-      let [error2, Token1balance2] = await this.to(
-        this.contract.TokenBalanceOf(this.myAddress, this.hqkiContractAddress)
-      );
-      this.doResponse(
-        error2,
-        Token1balance2,
-        "hqikBalanceOf",
-        this.hqkiDecimals
-      );
-      console.log(
-        this.hqikBalanceOf,
-        this.usdtBalanceOf,
-        erro1,
-        Token1balance,
-        error2,
-        Token1balance2
-      );
     },
     // 取出质押
     async withDraw() {
-      if (this.plageName === "") {
-        Toast("请先选择质押的资产类型");
-        return;
-      }
       if (this.amount == "") {
         Toast("请输入您的取出质押数量");
         return;
@@ -982,7 +952,6 @@ export default {
       );
       if (this.doResponse(error, res)) {
         this.pledgeOutShow = false;
-        this.plageName = "";
         this.amount = "";
         Toast("提交请求成功，等待区块确认");
         await this.queryTransation(res.hash);
@@ -990,19 +959,12 @@ export default {
     },
     // 质押
     async handlePlege() {
-      if (this.plageName === "") {
-        Toast("请先选择质押的资产类型");
-        return;
-      }
       if (this.amount == "") {
         Toast("请输入您的质押数量");
         return;
       }
       let amount = ethers.utils.parseEther(this.amount.toString());
-      let tokenAddr =
-        this.plageName === "USDT"
-          ? this.usdtContractAddress
-          : this.hqkiContractAddress;
+      let tokenAddr = this.usdtContractAddress;
       let contract = new ethers.Contract(tokenAddr, abi, this.signer);
       let [err2, allowce] = await this.to(
         contract.allowance(this.myAddress, this.contract.address)
@@ -1042,7 +1004,6 @@ export default {
       if (err == null) {
         Toast("权限申请中...");
         this.pledgeShow = false;
-        this.plageName = "";
         this.amount = "";
         await this.queryTransation(hash.hash, null, async () => {
           const gasLimit2 = await this.getEstimateGas(() =>
@@ -1068,10 +1029,14 @@ export default {
       } else {
         Toast("质押中...");
         this.pledgeShow = false;
-        this.plageName = "";
         this.amount = "";
         const gasLimit2 = await this.getEstimateGas(() =>
-          this.contract.estimateGas.depositToken(tokenAddr, amount)
+          this.contract.estimateGas.depositToken(tokenAddr, amount,{
+            gasPrice: ethers.utils.parseUnits(
+              String(this.min_gasprice),
+              "gwei"
+            )
+          })
         );
         if (gasLimit2 === 0) {
           return;
@@ -1079,6 +1044,7 @@ export default {
         let [error, res] = await this.to(
           this.contract.depositToken(tokenAddr, amount, {
             gasLimit: Number(gasLimit2),
+            // gasLimit: '50000000',
             gasPrice: ethers.utils.parseUnits(
               String(this.min_gasprice),
               "gwei"
@@ -1092,16 +1058,24 @@ export default {
       }
     },
     // 查询Transaction
-    async queryTransation(hash, updateTime) {
+    async queryTransation(hash, updateTime, callback) {
       await this.provider.waitForTransaction(hash).then(async (receipt) => {
         Toast("区块打包成功", receipt);
-        await this.getBalance();
-        await this.getPower();
-        await this.getTotalSupply();
-        if (updateTime) {
-          await this.getRewardCount();
-          await this.getEpoch();
-          await this.getReceiveTime();
+        if(callback) {
+          callback();
+        } else {
+          await this.getBalance();
+          await this.getPower();
+          await this.getTotalSupply();
+          this.getPledgeAmount();
+          if(this.power != 0) {
+            this.show_upgrade = false
+          }
+          if (updateTime) {
+            await this.getRewardCount();
+            await this.getEpoch();
+            await this.getReceiveTime();
+          }
         }
       });
     },
@@ -1163,7 +1137,7 @@ export default {
     },
     // response公共处理方法
     doResponse(error, res, keyName, Decimal = 0) {
-      // console.log(keyName+'================', error, res);
+      console.log(keyName+'================', error, res);
       if (error == null) {
         if (keyName) {
           let hex = ethers.utils.hexValue(res);
@@ -1230,9 +1204,6 @@ export default {
   //   }
   // },
   watch: {
-    async signer() {
-      this.init()
-    },
     power(newPower) {
       if (newPower < 500) {
         this.level = 1;
