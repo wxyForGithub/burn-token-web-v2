@@ -644,12 +644,12 @@ export default {
       let [error2, token2] = await this.to(this.contract.requireToken());
       if (this.doResponse(error2, token2)) {
         const token2Contract = new ethers.Contract(token2, abi, this.signer);
-        let [error2_2, token2Decimals] = await this.to(
-          token2Contract.decimals()
-        );
-        if (this.doResponse(error2_2, token2Decimals)) {
-          this.usdtDecimals = token2Decimals;
-        }
+        // let [error2_2, token2Decimals] = await this.to(
+        //   token2Contract.decimals()
+        // );
+        // if (this.doResponse(error2_2, token2Decimals)) {
+        //   this.usdtDecimals = token2Decimals;
+        // }
         let [error2_3, token2Symbol] = await this.to(token2Contract.symbol());
         if (this.doResponse(error2_3, token2Symbol)) {
           this.usdtSymbol = token2Symbol;
@@ -932,7 +932,7 @@ export default {
         Toast("请输入您的取出质押数量");
         return;
       }
-      let amount = ethers.utils.parseEther(this.amount.toString());
+      let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
       let tokenAddr = this.usdtContractAddress;
       const gasLimit = await this.getEstimateGas(() =>
         this.contract.estimateGas.withdrawToken(tokenAddr, amount)
@@ -959,7 +959,8 @@ export default {
         Toast("请输入您的质押数量");
         return;
       }
-      let amount = ethers.utils.parseEther(this.amount.toString());
+      let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
+      
       let tokenAddr = this.usdtContractAddress;
       let contract = new ethers.Contract(tokenAddr, abi, this.signer);
       let [err2, allowce] = await this.to(
@@ -1000,7 +1001,6 @@ export default {
       if (err == null) {
         Toast("权限申请中...");
         this.pledgeShow = false;
-        this.amount = "";
         await this.queryTransation(hash.hash, null, async () => {
           const gasLimit2 = await this.getEstimateGas(() =>
             this.contract.estimateGas.depositToken(tokenAddr, amount)
@@ -1025,7 +1025,6 @@ export default {
       } else {
         Toast("质押中...");
         this.pledgeShow = false;
-        this.amount = "";
         const gasLimit2 = await this.getEstimateGas(() =>
           this.contract.estimateGas.depositToken(tokenAddr, amount, {
             gasPrice: ethers.utils.parseUnits(
@@ -1040,7 +1039,6 @@ export default {
         let [error, res] = await this.to(
           this.contract.depositToken(tokenAddr, amount, {
             gasLimit: Number(gasLimit2),
-            // gasLimit: '50000000',
             gasPrice: ethers.utils.parseUnits(
               String(this.min_gasprice),
               "gwei"
@@ -1067,6 +1065,7 @@ export default {
           if(this.power != 0) {
             this.show_upgrade = false
           }
+          this.amount = "";
           if (updateTime) {
             await this.getRewardCount();
             await this.getEpoch();
