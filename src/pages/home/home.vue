@@ -133,7 +133,7 @@
       <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
-            <div class="num">USDT质押数量</div>
+            <div class="num">QUSDT质押数量</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div>
             <div class="flex_h">
               <div class="flex-box round" @click="pledgeShow = true">
