@@ -371,14 +371,14 @@ contract burn_token_v2 is SafeMath{
         uint256 qbt_power = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).power(msg.sender);
         if(qbt_power > 100)//老合约没有算力就不用升级
         {
-            power[msg.sender] = hbt_power;
+            power[msg.sender] = qbt_power;
             totalPower += qbt_power;
             totalUsersAmount++;
         }
         address qbt_invite  = burn_token(0x3FB708e854041673433e708feDb9a1b43905b6f7).invite(msg.sender);
         if(qbt_invite != address(0))
         {
-            invite[msg.sender] = hbt_invite;//记录邀请人
+            invite[msg.sender] = qbt_invite;//记录邀请人
             inviteCount[qbt_invite] += 1;//邀请人的下级数加一
         }
     }
