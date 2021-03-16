@@ -113,7 +113,7 @@
         <div class="copy copy1 space-between">
           <div class="flex_v_start flex1">
             <div class="num">老合约算力</div>
-            <div class="blue_num">{{this.oldPower}}</div>
+            <div class="blue_num">{{ this.oldPower }}</div>
           </div>
           <div
             class="flex-box round"
@@ -135,8 +135,8 @@
           <div class="flex_v_start flex1">
             <div class="num">USDT质押数量</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div>
-              <div class="flex_h">
-                <div class="flex-box round" @click="pledgeShow = true">
+            <div class="flex_h">
+              <div class="flex-box round" @click="pledgeShow = true">
                 <img
                   :src="require('../../assets/' + assetUrl + 'up.png')"
                   class="up_img"
@@ -157,12 +157,11 @@
                 取出
               </div>
             </div>
-            
           </div>
           <!-- <div class="flex_v_start flex1"> -->
-            <!-- <div class="num">USDT质押数量</div>
+          <!-- <div class="num">USDT质押数量</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div> -->
-            <!-- <div
+          <!-- <div
               class="flex-box round"
               style="background-color: #585858"
               @click="openPledgeOut"
@@ -176,9 +175,13 @@
             </div> -->
           <!-- </div> -->
         </div>
-        <div class="item" style="margin-top: 10px;">
+        <div class="item" style="margin-top: 10px">
           <div class="align-center">
-            <div class="text">全网USDT总质押量: <span style="color:red">{{ totalUsdtAmount }}</span>USDT</div>
+            <div class="text">
+              全网USDT总质押量:
+              <span style="color: red">{{ totalUsdtAmount }}</span
+              >USDT
+            </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
         </div>
@@ -468,7 +471,7 @@
       </div>
     </div>
 
-     <!-- 取出质押 -->
+    <!-- 取出质押 -->
     <div class="bg" v-show="pledgeOutShow">
       <div class="flex-box">
         <div class="box1">
@@ -477,9 +480,7 @@
           </div>
           <div class="text1 alignLeft">
             可取出数量
-            <span
-              >{{ usdtBalanceOf }} </span
-            >USDT
+            <span>{{ usdtBalanceOf }} </span>USDT
           </div>
 
           <div class="input-box space-between">
@@ -491,54 +492,49 @@
               v-model="amount"
             />
             <div class="align-center">
-              <div class="text2">USDT/div>
-              <div class="line"></div>
-              <div
-                class="text3"
-                @click="
-                  amount = usdtBalanceOf
-                "
-              >
-                全部
+              <div class="text2">
+                USDT</div>
+                <div class="line"></div>
+                <div class="text3" @click="amount = usdtBalanceOf">全部</div>
+              </div>
+          </div>
+            <div class="tit">* 取出资产需要在上次挖矿后24小时</div>
+            <div class="flex-box btn" @click="withDraw">确定取出</div>
+            <div class="text4" @click="pledgeOutShow = false">取消</div>
+          </div>
+        </div>
+    </div>
+      <!-- 质押 -->
+      <div class="bg" v-show="pledgeShow">
+        <div class="flex-box">
+          <div class="box1">
+            <div class="align-center">
+              <div class="text">质押资产</div>
+            </div>
+            <div class="text1 alignLeft">
+              等级小于V1的用户最少质押{{ minUsdt }}的USDT才可进行挖矿
+            </div>
+            <div class="input-box space-between">
+              <input
+                type="text"
+                class="input"
+                value
+                placeholder="输入质押数量"
+                v-model="amount"
+              />
+              <div class="align-center">
+                <div class="line"></div>
+                <div class="text2">USDT</div>
               </div>
             </div>
+            <div class="flex-box btn" @click="handlePlege">确定质押</div>
+            <div class="text4" @click="pledgeShow = false">取消</div>
           </div>
-          <div class="tit">* 取出资产需要在上次挖矿后24小时</div>
-          <div class="flex-box btn" @click="withDraw">确定取出</div>
-          <div class="text4" @click="pledgeOutShow = false">取消</div>
         </div>
       </div>
     </div>
-    <!-- 质押 -->
-    <div class="bg" v-show="pledgeShow">
-      <div class="flex-box">
-        <div class="box1">
-          <div class="align-center">
-            <div class="text">质押资产</div>
-          </div>
-          <div class="text1 alignLeft">
-            等级小于V1的用户最少质押{{ minUsdt }}的USDT才可进行挖矿
-          </div>
-          <div class="input-box space-between">
-            <input
-              type="text"
-              class="input"
-              value
-              placeholder="输入质押数量"
-              v-model="amount"
-            />
-            <div class="align-center">
-              <div class="line"></div>
-              <div class="text2">USDT</div>
-            </div>
-          </div>
-          <div class="flex-box btn" @click="handlePlege">确定质押</div>
-          <div class="text4" @click="pledgeShow = false">取消</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
+    <!-- </div>
+  </div> -->
 </template>
 
 <script>
@@ -553,7 +549,7 @@ const RATE = ["0.002", "0.005", "0.006", "0.007", "0.008"];
 export default {
   data() {
     return {
-      contractAddress: "0xD3e9448D573963344f8cF6E95E6b072dc5b701C3", // 合约地址
+      contractAddress: GLOBAL_CONFIGS.contractAdress, // 合约地址
       oldContractAddress: "0x3FB708e854041673433e708feDb9a1b43905b6f7", // 老合约地址，用于查询power
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
@@ -593,45 +589,18 @@ export default {
       usdtDecimals: 6,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "0xa71EdC38d189767582C38A3145b5873052c3e47a",
+      usdtContractAddress: "0xDF0e293CC3c7bA051763FF6b026DA0853D446E38",
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
+      min_gasprice: 1.1,
     };
   },
-  async created() {
-    this.contractAddress =
-      process.env.NODE_ENV == "development"
-        ? "0x3FB708e854041673433e708feDb9a1b43905b6f7"
-        : GLOBAL_CONFIGS.contractAdress;
-    await this.getAddress();
-    let currAbi = abi;
-    var contract = new ethers.Contract(
-      this.contractAddress,
-      currAbi,
-      this.signer
-    );
-    this.contract = contract;
-    await this.getDecimals();
-    await this.getEpoch();
-    this.getTotalSupply();
-    this.getinviteCount();
-    this.getReceiveTime();
-    this.getRewardCount();
-    this.getInviteAddress();
-    this.getBalance();
-    await this.getPower();
-    this.show_upgrade = true;
-    // if (this.power == 0) {
-    //   await this.getIsUpgrade();
-      
-    //   if (this.is_upgrade) {
-    //     this.getOldPower();
-    //   } else {
-    //     this.show_upgrade = false;
-    //   }
-    // }
-    await this.initContract();
-    this.getPledgeAmount();
+  created() {
+    // this.contractAddress =
+    //   process.env.NODE_ENV == "development"
+    //     ? "0x3FB708e854041673433e708feDb9a1b43905b6f7"
+    //     : GLOBAL_CONFIGS.contractAdress;
+    this.init()
   },
   mixins: [h5Copy, initEth, timeUtils, vertify, Decimal],
   methods: {
@@ -639,22 +608,41 @@ export default {
       this.type = num;
       this.bgShow = true;
     },
+    async init() {
+      if (this.signer == null) {
+        return;
+      }
+      var contract = new ethers.Contract(
+        this.contractAddress,
+        abi,
+        this.signer
+      );
+      this.contract = contract;
+      await this.getDecimals();
+      await this.getEpoch();
+      this.getTotalSupply();
+      this.getinviteCount();
+      this.getReceiveTime();
+      this.getRewardCount();
+      this.getInviteAddress();
+      this.getBalance();
+      await this.getPower();
+      if (this.power == 0) {
+        await this.getIsUpgrade();
+        if (this.is_upgrade) {
+          this.getOldPower();
+        } else {
+          this.show_upgrade = false;
+        }
+      }
+      await this.initContract();
+      this.getPledgeAmount();
+    },
     // 获取合约初始化数据，以后都不会更新的方法，只请求一次
     async initContract() {
-      // 获取最小气价
-      // let [error, minGasprice] = await this.to(gasPriceApi());
-      // if(this.doResponse(error, minGasprice)){
-      //   if(minGasprice.code === 0) {
-      //     this.min_gasprice = Number(minGasprice.prices && minGasprice.prices.median || 1) + 0.1
-      //   } else {
-      //     this.min_gasprice = 1.1
-      //   }
-      // } else {
-      //   this.min_gasprice = 1.1
-      // }
-
       // 获取token2
       let [error2, token2] = await this.to(this.contract.requireToken());
+      console.log('*********====================******',token2);
       if (this.doResponse(error2, token2)) {
         const token2Contract = new ethers.Contract(token2, abi, this.signer);
         let [error2_2, token2Decimals] = await this.to(
@@ -673,7 +661,12 @@ export default {
         let [error, usdtBalance] = await this.to(
           token2Contract.balanceOf(this.contractAddress)
         );
-        this.doResponse(error, usdtBalance, 'totalUsdtAmount', this.usdtDecimals);
+        this.doResponse(
+          error,
+          usdtBalance,
+          "totalUsdtAmount",
+          this.usdtDecimals
+        );
       }
 
       // 获取是否可以进行挖矿
@@ -705,14 +698,14 @@ export default {
         }
       }
     },
-    async getAddress() {
-      let [error, address] = await this.to(this.signer.getAddress());
-      if (error == null) {
-        this.myAddress = address;
-      } else {
-        console.log(error);
-      }
-    },
+    // async getAddress() {
+    //   let [error, address] = await this.to(this.signer.getAddress());
+    //   if (error == null) {
+    //     this.myAddress = address;
+    //   } else {
+    //     console.log(error);
+    //   }
+    // },
     // 获取主网qki的余额
     async getQkiBalance() {
       let [error, balance] = await this.to(
@@ -899,7 +892,9 @@ export default {
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.upgrade({gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei")})
+        this.contract.estimateGas.upgrade({
+          gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
+        })
       );
       if (gasLimit === 0) {
         return;
@@ -931,23 +926,9 @@ export default {
         this.contract.TokenBalanceOf(this.myAddress, this.usdtContractAddress)
       );
       this.doResponse(erro1, Token1balance, "usdtBalanceOf", this.usdtDecimals);
-      let [error2, Token1balance2] = await this.to(
-        this.contract.TokenBalanceOf(this.myAddress, this.hqkiContractAddress)
-      );
-      this.doResponse(
-        error2,
-        Token1balance2,
-        "hqikBalanceOf",
-        this.hqkiDecimals
-      );
-      console.log(this.hqikBalanceOf, this.usdtBalanceOf, erro1, Token1balance, error2, Token1balance2)
     },
     // 取出质押
     async withDraw() {
-      if (this.plageName === "") {
-        Toast("请先选择质押的资产类型");
-        return;
-      }
       if (this.amount == "") {
         Toast("请输入您的取出质押数量");
         return;
@@ -971,7 +952,6 @@ export default {
       );
       if (this.doResponse(error, res)) {
         this.pledgeOutShow = false;
-        this.plageName = "";
         this.amount = "";
         Toast("提交请求成功，等待区块确认");
         await this.queryTransation(res.hash);
@@ -979,27 +959,25 @@ export default {
     },
     // 质押
     async handlePlege() {
-      if (this.plageName === "") {
-        Toast("请先选择质押的资产类型");
-        return;
-      }
       if (this.amount == "") {
         Toast("请输入您的质押数量");
         return;
       }
       let amount = ethers.utils.parseEther(this.amount.toString());
-      let tokenAddr =
-        this.plageName === "USDT"
-          ? this.usdtContractAddress
-          : this.hqkiContractAddress;
+      let tokenAddr = this.usdtContractAddress;
       let contract = new ethers.Contract(tokenAddr, abi, this.signer);
-      let [err2, allowce] = await this.to(contract.allowance(this.myAddress, this.contract.address))
-      let response = [false,];
-      
-      if(this.doResponse(err2, allowce)) {
-        const hex = ethers.utils.hexValue(allowce)
-        const Value = Decimal.div(this.hex2int(hex), ethers.BigNumber.from(10).pow(this.decimals))
-       
+      let [err2, allowce] = await this.to(
+        contract.allowance(this.myAddress, this.contract.address)
+      );
+      let response = [false];
+
+      if (this.doResponse(err2, allowce)) {
+        const hex = ethers.utils.hexValue(allowce);
+        const Value = Decimal.div(
+          this.hex2int(hex),
+          ethers.BigNumber.from(10).pow(this.decimals)
+        );
+
         if (!(Decimal.sub(Value, amount) >= 0)) {
           const gasLimit1 = await this.getEstimateGas(() =>
             contract.estimateGas.approve(this.contract.address, amount)
@@ -1008,18 +986,24 @@ export default {
             return;
           }
           response = await this.to(
-            contract.approve(this.contract.address, '1000000000000000000000000000000000000000000000000000000000000000000000000000', {
-              gasLimit: Number(gasLimit1),
-              gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
-            })
+            contract.approve(
+              this.contract.address,
+              "1000000000000000000000000000000000000000000000000000000000000000000000000000",
+              {
+                gasLimit: Number(gasLimit1),
+                gasPrice: ethers.utils.parseUnits(
+                  String(this.min_gasprice),
+                  "gwei"
+                ),
+              }
+            )
           );
         }
       }
       let [err, hash] = response;
-      if(err == null) {
-        Toast('权限申请中...');
+      if (err == null) {
+        Toast("权限申请中...");
         this.pledgeShow = false;
-        this.plageName = "";
         this.amount = "";
         await this.queryTransation(hash.hash, null, async () => {
           const gasLimit2 = await this.getEstimateGas(() =>
@@ -1031,7 +1015,10 @@ export default {
           let [error, res] = await this.to(
             this.contract.depositToken(tokenAddr, amount, {
               gasLimit: Number(gasLimit2),
-              gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
+              gasPrice: ethers.utils.parseUnits(
+                String(this.min_gasprice),
+                "gwei"
+              ),
             })
           );
           if (this.doResponse(error, res)) {
@@ -1040,12 +1027,16 @@ export default {
           }
         });
       } else {
-        Toast('质押中...');
+        Toast("质押中...");
         this.pledgeShow = false;
-        this.plageName = "";
         this.amount = "";
         const gasLimit2 = await this.getEstimateGas(() =>
-          this.contract.estimateGas.depositToken(tokenAddr, amount)  
+          this.contract.estimateGas.depositToken(tokenAddr, amount,{
+            gasPrice: ethers.utils.parseUnits(
+              String(this.min_gasprice),
+              "gwei"
+            )
+          })
         );
         if (gasLimit2 === 0) {
           return;
@@ -1053,7 +1044,11 @@ export default {
         let [error, res] = await this.to(
           this.contract.depositToken(tokenAddr, amount, {
             gasLimit: Number(gasLimit2),
-            gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
+            // gasLimit: '50000000',
+            gasPrice: ethers.utils.parseUnits(
+              String(this.min_gasprice),
+              "gwei"
+            ),
           })
         );
         if (this.doResponse(error, res)) {
@@ -1061,19 +1056,26 @@ export default {
           await this.queryTransation(res.hash);
         }
       }
-      
     },
     // 查询Transaction
-    async queryTransation(hash, updateTime) {
+    async queryTransation(hash, updateTime, callback) {
       await this.provider.waitForTransaction(hash).then(async (receipt) => {
         Toast("区块打包成功", receipt);
-        await this.getBalance();
-        await this.getPower();
-        await this.getTotalSupply();
-        if (updateTime) {
-          await this.getRewardCount();
-          await this.getEpoch();
-          await this.getReceiveTime();
+        if(callback) {
+          callback();
+        } else {
+          await this.getBalance();
+          await this.getPower();
+          await this.getTotalSupply();
+          this.getPledgeAmount();
+          if(this.power != 0) {
+            this.show_upgrade = false
+          }
+          if (updateTime) {
+            await this.getRewardCount();
+            await this.getEpoch();
+            await this.getReceiveTime();
+          }
         }
       });
     },
@@ -1135,7 +1137,7 @@ export default {
     },
     // response公共处理方法
     doResponse(error, res, keyName, Decimal = 0) {
-      // console.log(keyName+'================', error, res);
+      console.log(keyName+'================', error, res);
       if (error == null) {
         if (keyName) {
           let hex = ethers.utils.hexValue(res);
@@ -1482,8 +1484,6 @@ export default {
           margin-top: 30px;
           margin-right: 100px;
           // width: 50% !important;
-
-         
         }
       }
     }
@@ -1509,24 +1509,24 @@ export default {
         padding: 15px 30px;
       }
     }
-     &.round {
-        border-radius: 30px;
-      }
-      .upgrade_img {
-        width: 16px;
-        height: 30px;
-        margin-right: 10px;
-      }
-      .up_img {
-        width: 24px;
-        height: 33px;
-        margin-right: 10px;
-      }
-      .down_img {
-        width: 24px;
-        height: 33px;
-        margin-right: 10px;
-      }
+    &.round {
+      border-radius: 30px;
+    }
+    .upgrade_img {
+      width: 16px;
+      height: 30px;
+      margin-right: 10px;
+    }
+    .up_img {
+      width: 24px;
+      height: 33px;
+      margin-right: 10px;
+    }
+    .down_img {
+      width: 24px;
+      height: 33px;
+      margin-right: 10px;
+    }
   }
 }
 

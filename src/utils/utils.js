@@ -98,51 +98,75 @@ const initEth = {
   data() {
     return {
       provider: {},
-      signer: {},
-      chainId: 0
+      signer: null,
+      chainId: 0,
+      myAddress: ''
     }
   },
   async created() {
-    if (typeof ethereum == "undefined") {
-      Toast(GLOBAL_CONFIGS.openPluginToast)
-    } else {
-      window.ethereum.enable();
-      let customHttpProvider = new ethers.providers.Web3Provider(
-        window.ethereum
-      );
-      if (window.ethereum.isMetaMask) {
-        window.ethereum
-          .request({
-            method: 'net_version'
-          })
-          .then((chainId) => {
-            //可以把
-            if (chainId != GLOBAL_CONFIGS.chainId)
-              Toast(GLOBAL_CONFIGS.toggleToast)
-            this.chainId = chainId;
-          })
-          .catch((error) => {
-            // If the request fails, the Promise will reject with an error.
-            console.log(error)
-          });
-      }
-      window.ethereum.on('chainChanged', (chainId) => {
-        // Handle the new chain.
-        // Correctly handling chain changes can be complicated.
-        // We recommend reloading the page unless you have a very good reason not to.
-        if (chainId != GLOBAL_CONFIGS.chainIdHex) {
-          Toast(GLOBAL_CONFIGS.useToast)
+    if (typeof window.getPrivateKey === 'undefined') {
+      if (typeof ethereum == "undefined") {
+        // Toast(GLOBAL_CONFIGS.openPluginToast)
+        await this.waitInject()
+      } else {
+        window.ethereum.enable();
+        let customHttpProvider = new ethers.providers.Web3Provider(
+          window.ethereum
+        );
+        if (window.ethereum.isMetaMask) {
+          window.ethereum
+            .request({
+              method: 'net_version'
+            })
+            .then((chainId) => {
+              //可以把
+              if (chainId != GLOBAL_CONFIGS.chainId)
+                Toast(GLOBAL_CONFIGS.toggleToast)
+              this.chainId = chainId;
+            })
+            .catch((error) => {
+              // If the request fails, the Promise will reject with an error.
+              console.log(error)
+            });
         }
-        // setTimeout(function () {
-        //   window.location.reload()
-        // }, 2500)
-      });
+        window.ethereum.on('chainChanged', (chainId) => {
+          // Handle the new chain.
+          // Correctly handling chain changes can be complicated.
+          // We recommend reloading the page unless you have a very good reason not to.
+          if (chainId != GLOBAL_CONFIGS.chainIdHex) {
+            Toast(GLOBAL_CONFIGS.useToast)
+          }
+          // setTimeout(function () {
+          //   window.location.reload()
+          // }, 2500)
+        });
 
-      this.provider = customHttpProvider;
-      this.signer = customHttpProvider.getSigner();
+        this.provider = customHttpProvider;
+        this.signer = customHttpProvider.getSigner();
+      }
+    } else {
+      const privateKey = window.getPrivateKey()
+      this.provider = new ethers.providers.JsonRpcProvider({ url: 'https://hz.node.quarkblockchain.cn' })
+      this.signer = new ethers.Wallet(privateKey, this.provider)
     }
+    await this.getAddress()
   },
   methods: {
+    // 等待android注入结果
+    async waitInject () {
+      clearInterval(this.waitInjectTimer)
+      if (typeof window.getPrivateKey === 'undefined') {
+        this.waitInjectTimer = setTimeout(() => {
+          this.waitInject()
+        }, 1000)
+      } else {
+        clearInterval(this.waitInjectTimer)
+        const privateKey = window.getPrivateKey()
+        this.provider = new ethers.providers.JsonRpcProvider({ url: 'https://hz.node.quarkblockchain.cn' })
+        this.signer = new ethers.Wallet(privateKey, this.provider)
+        await this.getAddress()
+      }
+    },
     async isQKI() {
       let network = await this.provider.getNetwork();
       let networkVersion = network.chainId;
@@ -151,6 +175,15 @@ const initEth = {
         return false
       }
       return true;
+    },
+    // 获取地址
+    async getAddress() {
+      let [error, address] = await this.to(this.signer.getAddress());
+      if (error == null) {
+        this.myAddress = address;
+      } else {
+        console.log(error);
+      }
     },
     to(fnPromise){
       return fnPromise.then(res => [null, res]).catch(error => [error]);
