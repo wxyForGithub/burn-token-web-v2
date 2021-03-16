@@ -130,7 +130,7 @@
           </div>
         </div>
       </div>
-      <div class="my-box pleage-box" v-if="level < 2 || usdtBalanceOf > 0">
+      <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
             <div class="num">USDT质押数量</div>
@@ -642,7 +642,6 @@ export default {
     async initContract() {
       // 获取token2
       let [error2, token2] = await this.to(this.contract.requireToken());
-      console.log('*********====================******',token2);
       if (this.doResponse(error2, token2)) {
         const token2Contract = new ethers.Contract(token2, abi, this.signer);
         let [error2_2, token2Decimals] = await this.to(
@@ -934,10 +933,7 @@ export default {
         return;
       }
       let amount = ethers.utils.parseEther(this.amount.toString());
-      let tokenAddr =
-        this.plageName === "USDT"
-          ? this.usdtContractAddress
-          : this.hqkiContractAddress;
+      let tokenAddr = this.usdtContractAddress;
       const gasLimit = await this.getEstimateGas(() =>
         this.contract.estimateGas.withdrawToken(tokenAddr, amount)
       );
@@ -1031,7 +1027,7 @@ export default {
         this.pledgeShow = false;
         this.amount = "";
         const gasLimit2 = await this.getEstimateGas(() =>
-          this.contract.estimateGas.depositToken(tokenAddr, amount,{
+          this.contract.estimateGas.depositToken(tokenAddr, amount, {
             gasPrice: ethers.utils.parseUnits(
               String(this.min_gasprice),
               "gwei"
@@ -1137,7 +1133,7 @@ export default {
     },
     // response公共处理方法
     doResponse(error, res, keyName, Decimal = 0) {
-      console.log(keyName+'================', error, res);
+      // console.log(keyName+'================', error, res);
       if (error == null) {
         if (keyName) {
           let hex = ethers.utils.hexValue(res);
