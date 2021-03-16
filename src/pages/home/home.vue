@@ -592,7 +592,7 @@ export default {
       usdtContractAddress: "0xDF0e293CC3c7bA051763FF6b026DA0853D446E38",
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
-      min_gasprice: 1.1,
+      min_gasprice: 100,
     };
   },
   created() {
