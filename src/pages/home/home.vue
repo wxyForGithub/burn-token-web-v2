@@ -178,9 +178,9 @@
         <div class="item" style="margin-top: 10px">
           <div class="align-center">
             <div class="text">
-              全网USDT总质押量:
+              全网QUSDT总质押量:
               <span style="color: red">{{ totalUsdtAmount }}</span
-              >USDT
+              >QUSDT
             </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
@@ -188,7 +188,7 @@
         <div style="color: red; margin-top: 10px; font-size: 12px">
           温馨提示: 需要最少质押{{
             minUsdt
-          }}个USDT才可以参与挖矿,随着BT价格上升，会提高质押门槛。
+          }}个QUSDT才可以参与挖矿,随着BT价格上升，会提高质押门槛。
         </div>
       </div>
 
