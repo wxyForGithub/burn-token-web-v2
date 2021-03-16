@@ -748,7 +748,7 @@ export default {
       );
       let [error, res] = await this.to(contract.power(this.myAddress));
       this.doResponse(error, res, "oldPower", this.decimals);
-      if (this.oldPower < 50) {
+      if (this.oldPower <= 0) {
         this.show_upgrade = false;
       } else {
         this.show_upgrade = true;
