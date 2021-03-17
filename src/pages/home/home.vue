@@ -832,7 +832,7 @@ export default {
       let burn_amount =
         ethers.FixedNumber.from(this.amount.toString()) * 10 ** this.decimals;
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.burn(burn_amount)
+        this.contract.estimateGas.burn(burn_amount,{gasPrice: ethers.utils.parseUnits("600", "gwei")})
       );
       if (gasLimit === 0) {
         return;
@@ -856,7 +856,7 @@ export default {
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.mint()
+        this.contract.estimateGas.mint({gasPrice: ethers.utils.parseUnits("600", "gwei")})
       );
       if (gasLimit === 0) {
         return;
