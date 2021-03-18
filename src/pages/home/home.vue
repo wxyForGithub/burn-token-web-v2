@@ -133,7 +133,7 @@
       <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
-            <div class="num">USDT质押数量</div>
+            <div class="num">QUSDT质押数量</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div>
             <div class="flex_h">
               <div class="flex-box round" @click="pledgeShow = true">
@@ -178,9 +178,9 @@
         <div class="item" style="margin-top: 10px">
           <div class="align-center">
             <div class="text">
-              全网USDT总质押量:
+              全网QUSDT总质押量:
               <span style="color: red">{{ totalUsdtAmount }}</span
-              >USDT
+              >QUSDT
             </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
@@ -188,7 +188,7 @@
         <div style="color: red; margin-top: 10px; font-size: 12px">
           温馨提示: 需要最少质押{{
             minUsdt
-          }}个USDT才可以参与挖矿,随着BT价格上升，会提高质押门槛。
+          }}个QUSDT才可以参与挖矿,随着BT价格上升，会提高质押门槛。
         </div>
       </div>
 
@@ -832,12 +832,7 @@ export default {
       let burn_amount =
         ethers.FixedNumber.from(this.amount.toString()) * 10 ** this.decimals;
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.burn(burn_amount,{
-            gasPrice: ethers.utils.parseUnits(
-              String(this.min_gasprice),
-              "gwei"
-            )
-          })
+        this.contract.estimateGas.burn(burn_amount,{gasPrice: ethers.utils.parseUnits("600", "gwei")})
       );
       if (gasLimit === 0) {
         return;
@@ -861,12 +856,7 @@ export default {
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.mint({
-            gasPrice: ethers.utils.parseUnits(
-              String(this.min_gasprice),
-              "gwei"
-            )
-          })
+        this.contract.estimateGas.mint({gasPrice: ethers.utils.parseUnits("600", "gwei")})
       );
       if (gasLimit === 0) {
         return;
