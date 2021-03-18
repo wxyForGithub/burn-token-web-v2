@@ -935,7 +935,7 @@ export default {
       let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
       let tokenAddr = this.usdtContractAddress;
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.withdrawToken(tokenAddr, amount)
+        this.contract.estimateGas.withdrawToken(tokenAddr, amount,{gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),})
       );
       if (gasLimit === 0) {
         return;
@@ -977,7 +977,7 @@ export default {
 
         if (!(Decimal.sub(Value, amount) >= 0)) {
           const gasLimit1 = await this.getEstimateGas(() =>
-            contract.estimateGas.approve(this.contract.address, amount)
+            contract.estimateGas.approve(this.contract.address, amount,{gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),})
           );
           if (gasLimit1 === 0) {
             return;
@@ -1003,7 +1003,7 @@ export default {
         this.pledgeShow = false;
         await this.queryTransation(hash.hash, null, async () => {
           const gasLimit2 = await this.getEstimateGas(() =>
-            this.contract.estimateGas.depositToken(tokenAddr, amount)
+            this.contract.estimateGas.depositToken(tokenAddr, amount,{gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),})
           );
           if (gasLimit2 === 0) {
             return;
