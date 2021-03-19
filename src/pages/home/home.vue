@@ -99,6 +99,9 @@
       <div class="line" v-if="receiveTimestamp != 0">
         上次领取奖励：{{ receiveTime }}
       </div>
+      <div class="line" v-if="receiveTimestamp != 0" style="border-top: none">
+        下次领取奖励：{{ nextReceiveTime }}
+      </div>
       <div class="my-box airdrop-box" v-if="show_upgrade">
         <div class="top space-between">
           <div class="align-center">
@@ -567,6 +570,7 @@ export default {
       inviteCount: "0", // 邀请的人数
       receiveTimestamp: 0, // 上次领取奖励的时间戳
       receiveTime: "", // 上次领取奖励的时间
+      nextReceiveTime: "", // 下次领取奖励的时间
       inviteAddress: "", // 已绑定邀请人地址
       inviteAddressInput: "", // 输入邀请人的地址
       rewardCount: 0, // 获取累计收益
@@ -1215,6 +1219,7 @@ export default {
     receiveTimestamp(newTime) {
       if (newTime != 0) {
         this.receiveTime = this.timestampToTime(this.receiveTimestamp);
+         this.nextReceiveTime = this.timestampToTime(this.receiveTimestamp + this.epoch);
       }
       // 获取当前时间
       let nowTimeStr = Date.now().toString().substring(0, 10);
