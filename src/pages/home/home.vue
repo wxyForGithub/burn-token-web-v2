@@ -282,8 +282,8 @@
           <div class="flex1 flex_h">
             <img :src="require('../../assets/telegram.png')" alt="" />
             <div class="flex_v_start">
-              <div class="black30">Telegram</div>
-              <div class="grey30">BT社区中文群</div>
+              <div class="black30">火信</div>
+              <div class="grey30">BT中文社区</div>
             </div>
           </div>
           <div class="tele_btn" @click="joinTele">立即加入</div>
@@ -1172,9 +1172,9 @@ export default {
       }
     },
     joinTele() {
-      this.h5Copy("https://t.me/qkiburntoken");
+      this.h5Copy("https://h5.huobichat.com/sp/#/group?g=id61g7ygkt");
       setTimeout(() => {
-        window.location.href = "https://t.me/qkiburntoken";
+        window.location.href = "https://h5.huobichat.com/sp/#/group?g=id61g7ygkt";
       }, 1000);
     },
     joinQQ() {
