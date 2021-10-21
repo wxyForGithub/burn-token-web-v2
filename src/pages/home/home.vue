@@ -102,6 +102,29 @@
       <div class="line" v-if="receiveTimestamp != 0" style="border-top: none">
         下次领取奖励：{{ nextReceiveTime }}
       </div>
+
+      <div class="my-box airdrop-box" v-if="show_airdrop && !show_upgrade">
+        <div class="top space-between">
+          <div class="align-center">
+            <img
+              :src="require('../../assets/' + assetUrl + 'gift.png')"
+              class="img"
+              mode
+            />
+            <div class="text">领取空投</div>
+          </div>
+        </div>
+        <div class="copy copy1 space-between">
+          <div class="flex_v_start flex1">
+            <div class="num">空投数量</div>
+            <div class="blue_num">100 {{tokenSymbol}}</div>
+          </div>
+          <div class="flex-box round" @click="getAirdrop" v-if="show_airdrop">
+            领取空投
+          </div>
+        </div>
+      </div>
+
       <div class="my-box airdrop-box" v-if="show_upgrade">
         <div class="top space-between">
           <div class="align-center">
@@ -110,13 +133,13 @@
               class="img"
               mode
             />
-            <div class="text">升级</div>
+            <div class="text">升级算力</div>
           </div>
         </div>
         <div class="copy copy1 space-between">
           <div class="flex_v_start flex1">
             <div class="num">老合约算力</div>
-            <div class="blue_num">{{ this.oldPower }}</div>
+            <div class="blue_num">{{this.oldPower}}</div>
           </div>
           <div
             class="flex-box round"
@@ -133,10 +156,11 @@
           </div>
         </div>
       </div>
+
       <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
-            <div class="num">QUSDT质押数量</div>
+            <div class="num">CCT质押数量</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div>
             <div class="flex_h">
               <div class="flex-box round" @click="pledgeShow = true">
@@ -181,17 +205,27 @@
         <div class="item" style="margin-top: 10px">
           <div class="align-center">
             <div class="text">
-              全网QUSDT总质押量:
-              <span style="color: red">{{ totalUsdtAmount }}</span
-              >QUSDT
+              全网CCT总质押量:
+              <span style="color: red">{{ totalUsdtAmount }}</span> CCT
             </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
         </div>
+
+        <div class="item" style="margin-top: 10px">
+          <div class="align-center">
+            <div class="text">
+              全网参与地址数:
+              <span style="color: red">{{ totalUsersAmount  }}</span> 
+            </div>
+          </div>
+          <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
+        </div>
+
         <div style="color: red; margin-top: 10px; font-size: 12px">
           温馨提示: 需要最少质押{{
             minUsdt
-          }}个QUSDT才可以参与挖矿,随着BT价格上升，会提高质押门槛。
+          }}个CCT才可以参与挖矿,随着 {{tokenSymbol}} 价格上升，会提高质押门槛。
         </div>
       </div>
 
@@ -280,36 +314,10 @@
       <div class="my-box tele-box">
         <div class="copy copy1 space-between">
           <div class="flex1 flex_h">
-            <img :src="require('../../assets/telegram.png')" alt="" />
-            <div class="flex_v_start">
-              <div class="black30">火信</div>
-              <div class="grey30">BT中文社区</div>
-            </div>
-          </div>
-          <div class="tele_btn" @click="joinTele">立即加入</div>
-        </div>
-      </div>
-
-      <div class="my-box tele-box">
-        <div class="copy copy1 space-between">
-          <div class="flex1 flex_h">
-            <img :src="require('../../assets/QQ.png')" alt="" />
-            <div class="flex_v_start">
-              <div class="black30">575179088</div>
-              <div class="grey30">BT社区群</div>
-            </div>
-          </div>
-          <div class="tele_btn" @click="joinQQ">立即加入</div>
-        </div>
-      </div>
-
-      <div class="my-box tele-box">
-        <div class="copy copy1 space-between">
-          <div class="flex1 flex_h">
             <img :src="require('../../assets/ok.png')" alt="" />
             <div class="flex_v_start">
-              <div class="black30">Bananatok</div>
-              <div class="grey30">Burn Token中文社群</div>
+              <div class="black30">discord</div>
+              <div class="grey30">CCT Burn Token中文社群</div>
             </div>
           </div>
           <div class="tele_btn" @click="joinOther">立即加入</div>
@@ -341,18 +349,20 @@
             <span class="tit">转账手续费销毁功能</span>
             <br />
             <span class="lv first">v1</span>
-            <span class="tit">20%</span>
+            <span class="tit">50%</span>
             <span class="lv">v2</span>
-            <span class="tit">10%</span>
+            <span class="tit">15%</span>
             <span class="lv">v3</span>
-            <span class="tit">8%</span>
+            <span class="tit">12%</span>
             <span class="lv">v4</span>
-            <span class="tit">6%</span>
+            <span class="tit">9%</span>
             <span class="lv">v5</span>
-            <span class="tit">4%</span>
+            <span class="tit">7%</span>
+            <span class="lv">v6</span>
+            <span class="tit">5%</span>
             <br />
             <br />v1:算力0-499 v2:算力500-4999 v3:算力5000-9999
-            v4:算力10000-19999 v5:算力20000+
+            v4:算力10000-19999 v5:算力20000-39999 v6:算力40000+
             <br />*例如转账100个，转出方扣除120个，接收方获得100个，20个销毁。
           </div>
           <div class="flex-box btn" @click="lvShow = false">好的</div>
@@ -373,8 +383,7 @@
           </div>
           <div class="text1 alignLeft">
             可用余额
-            <span>{{ balance }}</span
-            >BT
+            <span>{{ balance }}</span> {{tokenSymbol}}
           </div>
           <div class="input-box space-between">
             <input
@@ -385,7 +394,7 @@
               v-model="amount"
             />
             <div class="align-center">
-              <div class="text2">BT</div>
+              <div class="text2">{{tokenSymbol}}</div>
               <div class="line"></div>
               <div class="text3" @click="inputAll">全部</div>
             </div>
@@ -393,6 +402,7 @@
           <div class="tit alignLeft">
             * 确定提交后你燃烧的余额将销毁变成3倍算力
           </div>
+          <div class="tit alignLeft">* 燃烧的时候会燃烧一定比例的cct，具体由社区dao决定</div>
           <div class="flex-box btn" @click="burn">确定燃烧</div>
           <div class="text4" @click="showBurnFlag = false">取消</div>
         </div>
@@ -434,7 +444,7 @@
           </div>
           <div class="text5" v-if="receiveAble">
             <span class="hugeMainTxt">{{ expectAmount }}</span>
-            <br />BT
+            <br />{{tokenSymbol}}
           </div>
           <div class="time-box" v-else>
             <div class="time" v-for="(item, index) in hour" :key="'1_' + index">
@@ -462,7 +472,7 @@
             上次领取奖励：{{ receiveTime }}
           </div>
           <!-- <div class="tit tit1">* 产出收益最多保留5天</div> -->
-          <div class="tit tit1 tit2">* 等级达到Lv2,产出收益最多累计5次</div>
+          <div class="tit tit1 tit2">* 等级达到Lv2,产出收益最多累计7次</div>
           <div
             :class="['flex-box', receiveAble ? 'btn' : 'btn-disable']"
             @click="getReceiveIncome"
@@ -483,7 +493,7 @@
           </div>
           <div class="text1 alignLeft">
             可取出数量
-            <span>{{ usdtBalanceOf }} </span>USDT
+            <span>{{ usdtBalanceOf }} </span>CCT
           </div>
 
           <div class="input-box space-between">
@@ -496,7 +506,7 @@
             />
             <div class="align-center">
               <div class="text2">
-                USDT</div>
+                CCT</div>
                 <div class="line"></div>
                 <div class="text3" @click="amount = usdtBalanceOf">全部</div>
               </div>
@@ -515,7 +525,7 @@
               <div class="text">质押资产</div>
             </div>
             <div class="text1 alignLeft">
-              等级小于V1的用户最少质押{{ minUsdt }}的USDT才可进行挖矿
+              等级小于V1的用户最少质押{{ minUsdt }}的CCT才可进行挖矿
             </div>
             <div class="input-box space-between">
               <input
@@ -527,7 +537,7 @@
               />
               <div class="align-center">
                 <div class="line"></div>
-                <div class="text2">USDT</div>
+                <div class="text2">CCT</div>
               </div>
             </div>
             <div class="flex-box btn" @click="handlePlege">确定质押</div>
@@ -547,20 +557,21 @@ import { ethers } from "ethers";
 import { abi } from "./abi";
 import { Toast } from "vant";
 import { GLOBAL_CONFIGS } from "../../utils/global";
-// 收益率,为了防止机器刷，LV1级qki余额大于1时，才能够拿到0.2%，否则拿到0.1%
-const RATE = ["0.002", "0.005", "0.006", "0.007", "0.008"];
+const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.07"];
 export default {
   data() {
     return {
-      contractAddress: GLOBAL_CONFIGS.contractAdress, // 合约地址
-      oldContractAddress: "0x3FB708e854041673433e708feDb9a1b43905b6f7", // 老合约地址，用于查询power
+      contractAddress: "0x9f125fE9A0d68d90045fD26E1D6AA7f83B12bCB7", // 合约地址
+      oldContractAddress: "0x376aC35643790F8c45dCaD925FDa2aa8B998C46e", // 老合约地址，用于查询power
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
       balance: "0.00", // 我的余额
       // totalPower: "0",// 全网通证总量
       totalSupply: "0", // 全网通证总量
+      totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
       level: 1,
+      Symbol:"CBT",
       lvShow: false,
       bgShow: false,
       pledgeShow: false,
@@ -587,16 +598,18 @@ export default {
       config: GLOBAL_CONFIGS,
       assetUrl: process.env.VUE_APP_PLATFORM == "QKI" ? "" : "heco/",
       is_upgrade: false, // 是否可以升级
+      is_airdrop: true, //是否可以空投
+      show_airdrop: true, //
       show_upgrade: false,
       oldPower: 0,
       minUsdt: 0,
-      usdtDecimals: 6,
+      usdtDecimals: 8,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "0xDF0e293CC3c7bA051763FF6b026DA0853D446E38",
+      usdtContractAddress: "0xE8377eCb0F32f0C16025d5cF360D6C9e2EA66Adf",
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
-      min_gasprice: 100,
+      min_gasprice: 150,
     };
   },
   created() {
@@ -624,6 +637,9 @@ export default {
       this.contract = contract;
       await this.getDecimals();
       await this.getEpoch();
+      
+      let [error, res] = await this.to(this.contract.totalUsersAmount());
+      this.doResponse(error, res, "totalUsersAmount");
       this.getTotalSupply();
       this.getinviteCount();
       this.getReceiveTime();
@@ -632,12 +648,15 @@ export default {
       this.getBalance();
       await this.getPower();
       if (this.power == 0) {
+        this.show_airdrop = true
         await this.getIsUpgrade();
         if (this.is_upgrade) {
           this.getOldPower();
         } else {
           this.show_upgrade = false;
         }
+      } else {
+        this.show_airdrop = false
       }
       await this.initContract();
       this.getPledgeAmount();
@@ -819,7 +838,7 @@ export default {
       // TODO: 如何验证地址的合法性？？
       let [error, res] = await this.to(
         this.contract.registration(this.inviteAddressInput, {
-          gasPrice: ethers.utils.parseUnits("600", "gwei"),
+          gasPrice: ethers.utils.parseUnits("100", "gwei"),
         })
       );
       if (this.doResponse(error, res)) {
@@ -836,7 +855,7 @@ export default {
       let burn_amount =
         ethers.FixedNumber.from(this.amount.toString()) * 10 ** this.decimals;
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.burn(burn_amount,{gasPrice: ethers.utils.parseUnits("600", "gwei")})
+        this.contract.estimateGas.burn(burn_amount,{gasPrice: ethers.utils.parseUnits("100", "gwei")})
       );
       if (gasLimit === 0) {
         return;
@@ -844,7 +863,7 @@ export default {
       let [error, res] = await this.to(
         this.contract.burn(burn_amount, {
           gasLimit,
-          gasPrice: ethers.utils.parseUnits("600", "gwei"),
+          gasPrice: ethers.utils.parseUnits("100", "gwei"),
         })
       );
       if (this.doResponse(error, res)) {
@@ -855,12 +874,16 @@ export default {
     },
     // 领取挖矿收益
     async getReceiveIncome() {
+      if  (!this.is_mint) {
+        Toast("还没有开始挖矿，请先发圈宣传锁定邀请关系");
+        return;
+      }
       if (!this.receiveAble) {
         Toast("您今天已经领取过收益了,明天再来！");
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.mint({gasPrice: ethers.utils.parseUnits("600", "gwei")})
+        this.contract.estimateGas.mint({gasPrice: ethers.utils.parseUnits("150", "gwei")})
       );
       if (gasLimit === 0) {
         return;
@@ -868,13 +891,40 @@ export default {
       let [error, res] = await this.to(
         this.contract.mint({
           gasLimit,
-          gasPrice: ethers.utils.parseUnits("600", "gwei"),
+          gasPrice: ethers.utils.parseUnits("150", "gwei"),
         })
       );
       if (this.doResponse(error, res, "")) {
         this.incomeFlag = false;
         Toast("收益领取成功！");
         await this.queryTransation(res.hash, true);
+      }
+    },
+    async getIsAirdrop() {
+      let [error, res] = await this.to(this.contract.is_airdrop());
+      if (this.doResponse(error, res)) {
+        this.is_airdrop = res;
+      }
+    },
+    // 领取空投
+    async getAirdrop() {
+      if (!this.is_airdrop) {
+        Toast("空投还未开始");
+        return;
+      }
+      if (this.power != 0) {
+        Toast("我的算力为0才可以参加领取空投活动！");
+        return;
+      }
+      let [error, res] = await this.to(
+        this.contract.airdrop({
+          gasLimit:"100000",
+          gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
+        })
+      );
+      if (this.doResponse(error, res, "")) {
+        Toast("空投领取成功，等待10秒后刷新即可看到算力！");
+        await this.queryTransation(res.hash);
       }
     },
     // 是否可以升级
@@ -964,7 +1014,7 @@ export default {
         return;
       }
       let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
-      
+
       let tokenAddr = this.usdtContractAddress;
       let contract = new ethers.Contract(tokenAddr, abi, this.signer);
       let [err2, allowce] = await this.to(
@@ -989,7 +1039,7 @@ export default {
           response = await this.to(
             contract.approve(
               this.contract.address,
-              "1000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "11579208923731619542357098500868790785326998466564056403945758400791312963993",
               {
                 gasLimit: Number(gasLimit1),
                 gasPrice: ethers.utils.parseUnits(
@@ -1171,22 +1221,10 @@ export default {
         return 0;
       }
     },
-    joinTele() {
-      this.h5Copy("https://h5.huobichat.com/sp/#/group?g=id61g7ygkt");
-      setTimeout(() => {
-        window.location.href = "https://h5.huobichat.com/sp/#/group?g=id61g7ygkt";
-      }, 1000);
-    },
-    joinQQ() {
-      this.h5Copy("575179088");
-      setTimeout(() => {
-        window.location.href = "tencent://message/?uin=10987654321";
-      }, 1000);
-    },
     joinOther() {
-      this.h5Copy("https://0.plus/burntokenChina");
+      this.h5Copy("https://discord.gg/wEZakneHX5");
       setTimeout(() => {
-        window.location.href = "https://0.plus/burntokenChina";
+        window.location.href = "https://discord.gg/wEZakneHX5";
       }, 1000);
     },
     tab(num) {
@@ -1212,8 +1250,10 @@ export default {
         this.level = 3;
       } else if (newPower < 20000) {
         this.level = 4;
-      } else {
+      }else if (newPower < 40000) {
         this.level = 5;
+      } else {
+        this.level = 6;
       }
     },
     receiveTimestamp(newTime) {
