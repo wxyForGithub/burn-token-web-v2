@@ -160,7 +160,7 @@
       <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
-            <div class="num">CCT质押数量</div>
+            <div class="num">{{burnTokenSymbol}}质押数量</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div>
             <div class="flex_h">
               <div class="flex-box round" @click="pledgeShow = true">
@@ -205,8 +205,8 @@
         <div class="item" style="margin-top: 10px">
           <div class="align-center">
             <div class="text">
-              全网CCT总质押量:
-              <span style="color: red">{{ totalUsdtAmount }}</span> CCT
+              全网{{burnTokenSymbol}}总质押量:
+              <span style="color: red">{{ totalUsdtAmount }}</span> {{burnTokenSymbol}}
             </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
@@ -225,7 +225,7 @@
         <div style="color: red; margin-top: 10px; font-size: 12px">
           温馨提示: 需要最少质押{{
             minUsdt
-          }}个CCT才可以参与挖矿,随着 {{tokenSymbol}} 价格上升，会提高质押门槛。
+          }}个{{burnTokenSymbol}}才可以参与挖矿,随着 {{tokenSymbol}} 价格上升，会提高质押门槛。
         </div>
       </div>
 
@@ -317,7 +317,7 @@
             <img :src="require('../../assets/ok.png')" alt="" />
             <div class="flex_v_start">
               <div class="black30">discord</div>
-              <div class="grey30">CCT Burn Token中文社群</div>
+              <div class="grey30">中文社群</div>
             </div>
           </div>
           <div class="tele_btn" @click="joinOther">立即加入</div>
@@ -402,7 +402,7 @@
           <div class="tit alignLeft">
             * 确定提交后你燃烧的余额将销毁变成3倍算力
           </div>
-          <div class="tit alignLeft">* 燃烧的时候会燃烧一定比例的cct，具体由社区dao决定</div>
+          <div class="tit alignLeft">* 燃烧的时候会燃烧一定比例的{{burnTokenSymbol}}，具体由社区dao决定</div>
           <div class="flex-box btn" @click="burn">确定燃烧</div>
           <div class="text4" @click="showBurnFlag = false">取消</div>
         </div>
@@ -493,7 +493,7 @@
           </div>
           <div class="text1 alignLeft">
             可取出数量
-            <span>{{ usdtBalanceOf }} </span>CCT
+            <span>{{ usdtBalanceOf }} </span>{{burnTokenSymbol}}
           </div>
 
           <div class="input-box space-between">
@@ -506,7 +506,7 @@
             />
             <div class="align-center">
               <div class="text2">
-                CCT</div>
+                {{burnTokenSymbol}}</div>
                 <div class="line"></div>
                 <div class="text3" @click="amount = usdtBalanceOf">全部</div>
               </div>
@@ -525,11 +525,11 @@
               <div class="text">质押资产</div>
             </div>
             <div class="text1 alignLeft">
-              等级小于V1的用户最少质押{{ minUsdt }}的CCT才可进行挖矿
+              等级小于V1的用户最少质押{{ minUsdt }}的{{burnTokenSymbol}}才可进行挖矿
             </div>
             <div class="input-box space-between">
               <input
-                type="text"
+                type="number"
                 class="input"
                 value
                 placeholder="输入质押数量"
@@ -537,7 +537,7 @@
               />
               <div class="align-center">
                 <div class="line"></div>
-                <div class="text2">CCT</div>
+                <div class="text2">{{burnTokenSymbol}}</div>
               </div>
             </div>
             <div class="flex-box btn" @click="handlePlege">确定质押</div>
@@ -561,7 +561,7 @@ const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.07"];
 export default {
   data() {
     return {
-      contractAddress: "0x9f125fE9A0d68d90045fD26E1D6AA7f83B12bCB7", // 合约地址
+      contractAddress: "0x878c96F2Ae211c003004f68c5C097d5Bf3232245", // 合约地址
       oldContractAddress: "0x376aC35643790F8c45dCaD925FDa2aa8B998C46e", // 老合约地址，用于查询power
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
@@ -571,7 +571,8 @@ export default {
       totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
       level: 1,
-      Symbol:"CBT",
+      tokenSymbol:"FTX",
+      burnTokenSymbol:"CCT",
       lvShow: false,
       bgShow: false,
       pledgeShow: false,
@@ -606,7 +607,7 @@ export default {
       usdtDecimals: 8,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "0xE8377eCb0F32f0C16025d5cF360D6C9e2EA66Adf",
+      usdtContractAddress: "0xE8377eCb0F32f0C16025d5cF360D6C9e2EA66Adf",//质押的token合约地址
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
       min_gasprice: 150,
@@ -1024,6 +1025,7 @@ export default {
 
       if (this.doResponse(err2, allowce)) {
         const hex = ethers.utils.hexValue(allowce);
+        console.log(this.hex2int(hex),)
         const Value = Decimal.div(
           this.hex2int(hex),
           ethers.BigNumber.from(10).pow(this.decimals)
@@ -1031,7 +1033,7 @@ export default {
 
         if (!(Decimal.sub(Value, amount) >= 0)) {
           const gasLimit1 = await this.getEstimateGas(() =>
-            contract.estimateGas.approve(this.contract.address, amount,{gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),})
+            contract.estimateGas.approve(this.contract.address, amount)
           );
           if (gasLimit1 === 0) {
             return;
