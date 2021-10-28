@@ -630,6 +630,10 @@ export default {
       if (this.signer == null) {
         return;
       }
+      let _gasPrice = await this.provider.getGasPrice();
+      if (_gasPrice > this.min_gasprice)
+      this.min_gasprice = _gasPrice;//如果网络当前矿工费高于预设最小值，使用当前值
+
       var contract = new ethers.Contract(
         this.contractAddress,
         abi,
@@ -638,7 +642,6 @@ export default {
       this.contract = contract;
       await this.getDecimals();
       await this.getEpoch();
-      
       let [error, res] = await this.to(this.contract.totalUsersAmount());
       this.doResponse(error, res, "totalUsersAmount");
       this.getTotalSupply();
