@@ -291,26 +291,6 @@
         </div>
       </div>
 
-      <div class="my-box">
-        <div class="text2">
-          <b>Burn Token</b> 的智能合约已通过<b>知道创宇审核</b>
-        </div>
-        <div class="text">
-          <a
-            class="link"
-            href="https://qkfilecdn.io/ipfs/QmXbSeRoC5QoJgNCvyz4igZZyy1shYgcTmBqSnJCRUafSt"
-            >点击查看审核安全报告</a
-          >
-        </div>
-        <div class="text">
-          <a
-            class="link"
-            href="https://qkfilecdn.io/ipfs/QmeZgnaFybXxFp9SorHTNkoMFZ5zHSmb7BTSSss5Cftmab"
-            >Click to view the audit security report</a
-          >
-        </div>
-      </div>
-
       <div class="my-box tele-box">
         <div class="copy copy1 space-between">
           <div class="flex1 flex_h">
@@ -561,8 +541,8 @@ const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.07"];
 export default {
   data() {
     return {
-      contractAddress: "0x878c96F2Ae211c003004f68c5C097d5Bf3232245", // 合约地址
-      oldContractAddress: "0x376aC35643790F8c45dCaD925FDa2aa8B998C46e", // 老合约地址，用于查询power
+      contractAddress: "", // 合约地址
+      oldContractAddress: "", // 老合约地址，用于查询power
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
       balance: "0.00", // 我的余额
@@ -571,8 +551,8 @@ export default {
       totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
       level: 1,
-      tokenSymbol:"FTX",
-      burnTokenSymbol:"CCT",
+      tokenSymbol:"",
+      burnTokenSymbol:"",
       lvShow: false,
       bgShow: false,
       pledgeShow: false,
@@ -604,10 +584,10 @@ export default {
       show_upgrade: false,
       oldPower: 0,
       minUsdt: 0,
-      usdtDecimals: 8,
+      usdtDecimals: 3,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "0xE8377eCb0F32f0C16025d5cF360D6C9e2EA66Adf",//质押的token合约地址
+      usdtContractAddress: "",//质押的token合约地址
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
       min_gasprice: 150,
@@ -631,8 +611,10 @@ export default {
         return;
       }
       let _gasPrice = await this.provider.getGasPrice();
+      _gasPrice = ethers.utils.formatUnits(_gasPrice, "gwei")
       if (_gasPrice > this.min_gasprice)
       this.min_gasprice = _gasPrice;//如果网络当前矿工费高于预设最小值，使用当前值
+      console.log(this.min_gasprice)
 
       var contract = new ethers.Contract(
         this.contractAddress,
@@ -842,7 +824,7 @@ export default {
       // TODO: 如何验证地址的合法性？？
       let [error, res] = await this.to(
         this.contract.registration(this.inviteAddressInput, {
-          gasPrice: ethers.utils.parseUnits("100", "gwei"),
+          gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
         })
       );
       if (this.doResponse(error, res)) {
@@ -859,7 +841,7 @@ export default {
       let burn_amount =
         ethers.FixedNumber.from(this.amount.toString()) * 10 ** this.decimals;
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.burn(burn_amount,{gasPrice: ethers.utils.parseUnits("100", "gwei")})
+        this.contract.estimateGas.burn(burn_amount,{gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei")})
       );
       if (gasLimit === 0) {
         return;
@@ -867,7 +849,7 @@ export default {
       let [error, res] = await this.to(
         this.contract.burn(burn_amount, {
           gasLimit,
-          gasPrice: ethers.utils.parseUnits("100", "gwei"),
+          gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
         })
       );
       if (this.doResponse(error, res)) {
@@ -887,7 +869,7 @@ export default {
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
-        this.contract.estimateGas.mint({gasPrice: ethers.utils.parseUnits("150", "gwei")})
+        this.contract.estimateGas.mint({gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei")})
       );
       if (gasLimit === 0) {
         return;
@@ -895,7 +877,7 @@ export default {
       let [error, res] = await this.to(
         this.contract.mint({
           gasLimit,
-          gasPrice: ethers.utils.parseUnits("150", "gwei"),
+          gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),
         })
       );
       if (this.doResponse(error, res, "")) {
