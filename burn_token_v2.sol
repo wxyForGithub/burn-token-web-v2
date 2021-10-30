@@ -460,6 +460,11 @@ contract burn_token is SafeMath{
         anti_bot = _value;
     }
 
+    function setburnTokenAmount(uint _value) public{
+        require(msg.sender == owner);
+        burnTokenAmount = _value;
+    }
+
     function startMint()public{
         require(msg.sender == owner);
         is_mint = true;
