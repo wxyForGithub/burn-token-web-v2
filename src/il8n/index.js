@@ -12,7 +12,7 @@ const messages = {
     langEn: '英文',
     langZh: '中文',
     income: '挖矿年化收益',
-    contractAddress: 'All Burn Token 合约地址',
+    contractAddress: '合约地址',
     burn: '燃烧原料',
     received: '明日再来',
     upgradePower: '升级算力',
@@ -34,13 +34,13 @@ const messages = {
     usedBalance: '可用余额',
     all: '全部',
     burnBtn: '确定燃烧',
-    burnDesc: '燃烧=销毁，1ABT可燃烧出价值3ABT的算力',
+    burnDesc: '燃烧=销毁，1{tokenSymbol}可燃烧出价值3{tokenSymbol}的算力',
     totalInvite: '共邀请{amount}人',
     myAddress: '我的地址',
     bindInviter:'绑定邀请人',
     binded: '已绑定',
     bindBtn: '确定绑定',
-    todayAmount: '今日收益 ABT',
+    todayAmount: '今日收益',
     getBtn: '确定领取',
     getDesc: '高级矿工最高可累积30天领取收益',
     receiveIncome: '领取收益',
@@ -111,7 +111,7 @@ const messages = {
     permission: '权限申请中',
   },
   en: {
-    power: 'My Power ABT',
+    power: 'My Power',
     balance: 'Balance',
     supply: 'Supply',
     burnToken: 'Burn Token',
@@ -121,7 +121,7 @@ const messages = {
     langEn: 'EN',
     langZh: 'ZH',
     income: 'Annual Mining Income',
-    contractAddress: 'All Burn Token Contract Address',
+    contractAddress: 'Contract Address',
     burn: 'Burn',
     received: 'Mined today',
     upgradePower: 'Upgrade',
@@ -143,13 +143,13 @@ const messages = {
     usedBalance: 'Available Balance',
     all: 'All',
     burnBtn: 'Submit Burn',
-    burnDesc: 'Burning = destruction, 1ABT can burn 3ABT worth of computing power',
+    burnDesc: 'Burning = destruction, 1{tokenSymbol}  can burn 3{tokenSymbol} worth of computing power',
     totalInvite: 'Total Invitation {amount} People',
     myAddress: 'My Address',
     bindInviter:'Bind Inviter',
     binded: 'Bound',
     bindBtn: 'Submit Bind',
-    todayAmount: "Today's Earnings ABT",
+    todayAmount: "Today's Earnings",
     getBtn: 'submit Receive',
     getDesc: 'Advanced miners can accumulate up to 30 days to receive income',
     receiveIncome: 'Receive income',
@@ -222,7 +222,7 @@ const messages = {
 }
 Vue.use(VueI18n);
 const i18n = new VueI18n({
-  locale: localStorage.getItem('APP_LANG') || 'en', // set locale
+  locale: localStorage.getItem('APP_LANG') || 'zh', // set locale
   silentFallbackWarn: true,
   messages, // set locale messages
 })
