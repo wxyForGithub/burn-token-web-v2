@@ -9,20 +9,30 @@
           class="huo"
           mode
         />
-        <div class="right">
-          <div class="align-center">
-            <div class="text">我的算力</div>
-            <img
-              :src="require('../../assets/lv' + level + '.png')"
-              class="lv"
-              mode
-            />
+        <div class="flex_h_between" style="width: 80%">
+          <div class="right">
+            <div class="align-center">
+              <div class="text">{{$t('power')}}</div>
+              <img
+                :src="require('../../assets/lv' + level + '.png')"
+                class="lv"
+                mode
+              />
+            </div>
+            <div class="num alignLeft">{{ power }}</div>
+            <div class="smallMainInserveTxt alignLeft">
+              {{$t('rewardTotal')}} {{ rewardCount }}
+            </div>
           </div>
-          <div class="num alignLeft">{{ power }}</div>
-          <div class="smallMainInserveTxt alignLeft">
-            累计邀请收益 {{ rewardCount }}
-          </div>
+          <div class="border_btn p_relative">
+                <span class="text" @click="dropdown=true">{{$t('langShortZh')}}</span>
+                <div class="dropdown flex_v_center" :style="{'opacity': dropdown ? '1' : '0' }">
+                  <span class="text" @click.stop="changeLang('en')">{{$t('langEn')}}</span>
+                  <span  class="text" @click.stop="changeLang('zh')">{{$t('langZh')}}</span>
+                </div>
+              </div>
         </div>
+        
       </div>
       <div class="money space-between">
         <div class="item">
@@ -32,7 +42,7 @@
               class="img"
               mode
             />
-            <div class="text">我的余额</div>
+            <div class="text">{{$t('balance')}}</div>
           </div>
           <div class="num">{{ balance }}</div>
         </div>
@@ -43,13 +53,13 @@
               class="img1"
               mode
             />
-            <div class="text">全网通证</div>
+            <div class="text">{{$t('supply')}}</div>
           </div>
           <div class="num">{{ totalSupply }}</div>
         </div>
       </div>
       <div class="hy">
-        <div class="text alignLeft">燃烧挖矿合约</div>
+        <div class="text alignLeft">{{$t('burnToken')}}</div>
         <div class="space-between">
           <div class="num ellipsis">{{ contractAddress }}</div>
           <img
@@ -69,7 +79,7 @@
             class="img"
             mode
           />
-          <div class="text">燃烧原料</div>
+          <div class="text">{{$t('burn')}}</div>
         </div>
         <div class="item" @click="showIncome">
           <img
@@ -77,7 +87,7 @@
             class="img"
             mode
           />
-          <div class="text">挖取矿产</div>
+          <div class="text">{{$t('drag')}}</div>
         </div>
         <div class="item" @click="lvShow = true">
           <img
@@ -85,7 +95,7 @@
             class="img"
             mode
           />
-          <div class="text">等级说明</div>
+          <div class="text">{{$t('levelDesc')}}</div>
         </div>
         <div class="item" @click="h5Copy(myAddress)">
           <img
@@ -93,14 +103,14 @@
             class="img"
             mode
           />
-          <div class="text">邀请好友</div>
+          <div class="text">{{$t('invite')}}</div>
         </div>
       </div>
       <div class="line" v-if="receiveTimestamp != 0">
-        上次领取奖励：{{ receiveTime }}
+        {{$t('prevDragTime')}}：{{ receiveTime }}
       </div>
       <div class="line" v-if="receiveTimestamp != 0" style="border-top: none">
-        下次领取奖励：{{ nextReceiveTime }}
+        {{$t('nextDragTime')}}：{{ nextReceiveTime }}
       </div>
 
       <div class="my-box airdrop-box" v-if="show_airdrop && !show_upgrade">
@@ -111,16 +121,16 @@
               class="img"
               mode
             />
-            <div class="text">领取空投</div>
+            <div class="text">{{$t('receiveAirdrop')}}</div>
           </div>
         </div>
         <div class="copy copy1 space-between">
           <div class="flex_v_start flex1">
-            <div class="num">空投数量</div>
+            <div class="num">{{$t('airdropAmount')}}</div>
             <div class="blue_num">100 {{tokenSymbol}}</div>
           </div>
           <div class="flex-box round" @click="getAirdrop" v-if="show_airdrop">
-            领取空投
+            {{$t('receiveAirdrop')}}
           </div>
         </div>
       </div>
@@ -133,12 +143,12 @@
               class="img"
               mode
             />
-            <div class="text">升级算力</div>
+            <div class="text">{{$t('upgradePower')}}</div>
           </div>
         </div>
         <div class="copy copy1 space-between">
           <div class="flex_v_start flex1">
-            <div class="num">老合约算力</div>
+            <div class="num">{{$('oldPower')}}</div>
             <div class="blue_num">{{this.oldPower}}</div>
           </div>
           <div
@@ -152,7 +162,7 @@
               class="upgrade_img"
               mode
             />
-            升级
+            {{$t('upgrade')}}
           </div>
         </div>
       </div>
@@ -160,7 +170,7 @@
       <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
-            <div class="num">{{burnTokenSymbol}}质押数量</div>
+            <div class="num">{{burnTokenSymbol}}{{$t('pledgeAmount')}}</div>
             <div class="blue_num">{{ usdtBalanceOf }}</div>
             <div class="flex_h">
               <div class="flex-box round" @click="pledgeShow = true">
@@ -169,7 +179,7 @@
                   class="up_img"
                   mode
                 />
-                质押
+                {{$t('pledge')}}
               </div>
               <div
                 class="flex-box round"
@@ -181,7 +191,7 @@
                   class="down_img"
                   mode
                 />
-                取出
+                {{$t('unlockPledge')}}
               </div>
             </div>
           </div>
@@ -205,7 +215,7 @@
         <div class="item" style="margin-top: 10px">
           <div class="align-center">
             <div class="text">
-              全网{{burnTokenSymbol}}总质押量:
+              {{$t('totalLiquitityPledge', {symbol: burnTokenSymbol})}}
               <span style="color: red">{{ totalUsdtAmount }}</span> {{burnTokenSymbol}}
             </div>
           </div>
@@ -215,7 +225,7 @@
         <div class="item" style="margin-top: 10px">
           <div class="align-center">
             <div class="text">
-              全网参与地址数:
+              {{$t('totalAddress')}}:
               <span style="color: red">{{ totalUsersAmount  }}</span> 
             </div>
           </div>
@@ -223,9 +233,7 @@
         </div>
 
         <div style="color: red; margin-top: 10px; font-size: 12px">
-          温馨提示: 需要最少质押{{
-            minUsdt
-          }}个{{burnTokenSymbol}}才可以参与挖矿,随着 {{tokenSymbol}} 价格上升，会提高质押门槛。
+          {{$t('minPledgeRule', {minAmount: minUsdt, pledgeTokenSymbol: burnTokenSymbol, tokenSymbol})}}
         </div>
       </div>
 
@@ -237,9 +245,9 @@
               class="img"
               mode
             />
-            <div class="text">我的地址</div>
+            <div class="text">{{$t('myAddress')}}</div>
           </div>
-          <div class="text">共邀请 {{ inviteCount }} 人</div>
+          <div class="text">{{$t('totalInvite', {amount: inviteCount})}}</div>
         </div>
         <div class="copy space-between">
           <div class="num ellipsis">{{ myAddress }}</div>
@@ -255,7 +263,7 @@
         <div class="top space-between">
           <div class="align-center">
             <img src="../../assets/bind.png" class="img1" mode />
-            <div class="text">绑定邀请人</div>
+            <div class="text">{{$t('bindInviter')}}</div>
           </div>
         </div>
         <div class="copy copy1 space-between">
@@ -266,7 +274,7 @@
             type="text"
             v-model="inviteAddressInput"
             v-else
-            placeholder="请输入邀请人地址"
+            :placeholder="$t('addressPlaceholder')"
             class="input_grey num flex1"
           />
           <div
@@ -276,9 +284,9 @@
               inviteAddress != '0x0000000000000000000000000000000000000000'
             "
           >
-            已绑定
+            {{$t('binded')}}
           </div>
-          <div class="flex-box" v-else @click="registration">确定绑定</div>
+          <div class="flex-box" v-else @click="registration">{{$t('bindBtn')}}</div>
         </div>
       </div>
 
@@ -297,10 +305,10 @@
             <img :src="require('../../assets/ok.png')" alt="" />
             <div class="flex_v_start">
               <div class="black30">discord</div>
-              <div class="grey30">中文社群</div>
+              <div class="grey30">{{$t('chCommunity')}}</div>
             </div>
           </div>
-          <div class="tele_btn" @click="joinOther">立即加入</div>
+          <div class="tele_btn" @click="joinOther">{{$t('join')}}</div>
         </div>
       </div>
 
@@ -309,7 +317,7 @@
           <img width="30px" src="../../assets/zdcy.png" mode />
         </div>
         <div class="item">
-          <div>知道创宇云安全认证</div>
+          <div>{{$t('authentication')}}</div>
           <div>WWW.YUNAQ.COM</div>
         </div>
       </div>
@@ -323,10 +331,10 @@
               class="wenhao"
               mode
             />
-            <div class="text">等级说明</div>
+            <div class="text">{{$t('levelDesc')}}</div>
           </div>
           <div class="text1 alignLeft">
-            <span class="tit">转账手续费销毁功能</span>
+            <span class="tit">{{$t('transfromFeeDesc')}}</span>
             <br />
             <span class="lv first">v1</span>
             <span class="tit">50%</span>
@@ -345,7 +353,7 @@
             v4:算力10000-19999 v5:算力20000-39999 v6:算力40000+
             <br />*例如转账100个，转出方扣除120个，接收方获得100个，20个销毁。
           </div>
-          <div class="flex-box btn" @click="lvShow = false">好的</div>
+          <div class="flex-box btn" @click="lvShow = false">{{$t('ok')}}</div>
         </div>
       </div>
     </div>
@@ -359,10 +367,10 @@
               class="rs"
               mode
             />
-            <div class="text">燃烧原料</div>
+            <div class="text">{{$t('burn')}}</div>
           </div>
           <div class="text1 alignLeft">
-            可用余额
+            {{$t('balance')}}
             <span>{{ balance }}</span> {{tokenSymbol}}
           </div>
           <div class="input-box space-between">
@@ -376,15 +384,17 @@
             <div class="align-center">
               <div class="text2">{{tokenSymbol}}</div>
               <div class="line"></div>
-              <div class="text3" @click="inputAll">全部</div>
+              <div class="text3" @click="inputAll">{{$t('all')}}</div>
             </div>
           </div>
           <div class="tit alignLeft">
-            * 确定提交后你燃烧的余额将销毁变成3倍算力
+            * {{$t('burnTips')}} 
           </div>
-          <div class="tit alignLeft">* 燃烧的时候会燃烧一定比例的{{burnTokenSymbol}}，具体由社区dao决定</div>
-          <div class="flex-box btn" @click="burn">确定燃烧</div>
-          <div class="text4" @click="showBurnFlag = false">取消</div>
+          <div class="tit alignLeft">* {{$t('burnTips2', {
+            tokenSymbol: burnTokenSymbol
+            })}}</div>
+          <div class="flex-box btn" @click="burn">{{$t('burnBtn')}}</div>
+          <div class="text4" @click="showBurnFlag = false">{{$t('cancel')}}</div>
         </div>
       </div>
     </div>
@@ -398,7 +408,7 @@
               class="wq"
               mode
             />
-            <div class="text">挖取矿产</div>
+            <div class="text">{{$t('drag')}}</div>
           </div>
           <div class="text5">
             <span>152152.311</span>
@@ -420,7 +430,7 @@
               class="lq"
               mode
             />
-            <div class="text">领取收益</div>
+            <div class="text">{{$t('receiveIncome')}}</div>
           </div>
           <div class="text5" v-if="receiveAble">
             <span class="hugeMainTxt">{{ expectAmount }}</span>
@@ -449,17 +459,17 @@
             </div>
           </div>
           <div class="last-time" v-if="!receiveAble">
-            上次领取奖励：{{ receiveTime }}
+             {{$t('prevDragTime')}}：{{ receiveTime }}
           </div>
           <!-- <div class="tit tit1">* 产出收益最多保留5天</div> -->
-          <div class="tit tit1 tit2">* 等级达到Lv2,产出收益最多累计7次</div>
+          <div class="tit tit1 tit2">* {{$t('leveTips', {time: this.maxDay})}}</div>
           <div
             :class="['flex-box', receiveAble ? 'btn' : 'btn-disable']"
             @click="getReceiveIncome"
           >
-            {{ receiveAble ? "确定领取" : "明日再来" }}
+            {{ receiveAble ? $t('getBtn') : $t('received') }}
           </div>
-          <div class="text4" @click="incomeFlag = false">取消</div>
+          <div class="text4" @click="incomeFlag = false">{{$t('cancel')}}</div>
         </div>
       </div>
     </div>
@@ -469,10 +479,10 @@
       <div class="flex-box">
         <div class="box1">
           <div class="align-center">
-            <div class="text">取出资产</div>
+            <div class="text">{{$t('unlockPledge')}}</div>
           </div>
           <div class="text1 alignLeft">
-            可取出数量
+            {{$t('unlockPledgeAmount')}}
             <span>{{ usdtBalanceOf }} </span>{{burnTokenSymbol}}
           </div>
 
@@ -481,19 +491,19 @@
               type="text"
               class="input"
               value
-              placeholder="输入取出数量"
+              :placeholder="$t('amountPlaceholder')"
               v-model="amount"
             />
             <div class="align-center">
               <div class="text2">
                 {{burnTokenSymbol}}</div>
                 <div class="line"></div>
-                <div class="text3" @click="amount = usdtBalanceOf">全部</div>
+                <div class="text3" @click="amount = usdtBalanceOf">{{$t('all')}}</div>
               </div>
           </div>
-            <div class="tit">* 取出资产需要在上次挖矿后24小时</div>
-            <div class="flex-box btn" @click="withDraw">确定取出</div>
-            <div class="text4" @click="pledgeOutShow = false">取消</div>
+            <div class="tit">* {{$t('withdrawRule')}}</div>
+            <div class="flex-box btn" @click="withDraw">{{$t('unlockPledge')}}</div>
+            <div class="text4" @click="pledgeOutShow = false">{{$t('cancel')}}</div>
           </div>
         </div>
     </div>
@@ -502,17 +512,17 @@
         <div class="flex-box">
           <div class="box1">
             <div class="align-center">
-              <div class="text">质押资产</div>
+              <div class="text">{{$t('pledge')}}</div>
             </div>
             <div class="text1 alignLeft">
-              等级小于V1的用户最少质押{{ minUsdt }}的{{burnTokenSymbol}}才可进行挖矿
+              {{$t('pledgeTips', {minAmount: minUsdt, symbol: burnTokenSymbol})}}
             </div>
             <div class="input-box space-between">
               <input
                 type="number"
                 class="input"
                 value
-                placeholder="输入质押数量"
+                :placeholder="$t('amountPlaceholder')"
                 v-model="amount"
               />
               <div class="align-center">
@@ -520,8 +530,8 @@
                 <div class="text2">{{burnTokenSymbol}}</div>
               </div>
             </div>
-            <div class="flex-box btn" @click="handlePlege">确定质押</div>
-            <div class="text4" @click="pledgeShow = false">取消</div>
+            <div class="flex-box btn" @click="handlePlege">{{$t('pledge')}}</div>
+            <div class="text4" @click="pledgeShow = false">{{$t('cancel')}}</div>
           </div>
         </div>
       </div>
@@ -591,6 +601,8 @@ export default {
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
       min_gasprice: 150,
+      maxDay: 7, // 最大累计的天数
+      dropdown: false,
     };
   },
   created() {
@@ -652,16 +664,17 @@ export default {
       // 获取token2
       let [error2, token2] = await this.to(this.contract.requireToken());
       if (this.doResponse(error2, token2)) {
+        this.usdtContractAddress = token2
         const token2Contract = new ethers.Contract(token2, abi, this.signer);
-        // let [error2_2, token2Decimals] = await this.to(
-        //   token2Contract.decimals()
-        // );
-        // if (this.doResponse(error2_2, token2Decimals)) {
-        //   this.usdtDecimals = token2Decimals;
-        // }
+        let [error2_2, token2Decimals] = await this.to(
+          token2Contract.decimals()
+        );
+        if (this.doResponse(error2_2, token2Decimals)) {
+          this.usdtDecimals = token2Decimals;
+        }
         let [error2_3, token2Symbol] = await this.to(token2Contract.symbol());
         if (this.doResponse(error2_3, token2Symbol)) {
-          this.usdtSymbol = token2Symbol;
+          this.burnTokenSymbol = token2Symbol;
         }
         let [error2_4, token2Min] = await this.to(this.contract.anti_bot());
         this.doResponse(error2_4, token2Min, "minUsdt", this.usdtDecimals);
@@ -693,8 +706,8 @@ export default {
           // 默认领取一天的收益，传入参数只要是小于epoch的任何一个数都可以
           this.calcExpectAmount(10);
         } else {
-          Toast("您当前还没有算力！");
-          return;
+          Toast(this.$t('noPower'));
+          return; 
         }
       } else {
         this.incomeFlag = true;
@@ -802,13 +815,13 @@ export default {
     // 绑定邀请人。
     async registration() {
       if (this.inviteAddressInput == "") {
-        Toast("请输入绑定邀请的地址");
+        Toast(this.$t('addressPlaceholder'));
         return;
       }
       if (
         this.inviteAddressInput.toLowerCase() == this.myAddress.toLowerCase()
       ) {
-        Toast("不能绑定自己！");
+        Toast(this.$t('notOwner'));
         this.inviteAddressInput = "";
         return;
       }
@@ -816,7 +829,7 @@ export default {
         this.inviteAddressInput.toLowerCase() ==
         this.contractAddress.toLowerCase()
       ) {
-        Toast("不能绑定合约地址为邀请人！");
+        Toast(this.$t('notContract'));
         this.inviteAddressInput = "";
         return;
       }
@@ -828,14 +841,14 @@ export default {
         })
       );
       if (this.doResponse(error, res)) {
-        Toast("绑定成功");
+        Toast(this.$t('bindSuccess'));
         this.inviteAddress = this.inviteAddressInput;
       }
     },
     // 燃烧
     async burn() {
       if (this.amount == "") {
-        Toast("请输入您的燃烧数量");
+        Toast(this.$t('amountPlaceholder'));
         return;
       }
       let burn_amount =
@@ -854,7 +867,7 @@ export default {
       );
       if (this.doResponse(error, res)) {
         this.showBurnFlag = false;
-        Toast("操作成功");
+        Toast(this.$t('operateSuccess'));
         await this.queryTransation(res.hash);
       }
     },
@@ -865,7 +878,7 @@ export default {
         return;
       }
       if (!this.receiveAble) {
-        Toast("您今天已经领取过收益了,明天再来！");
+        Toast(this.$t('received1'));
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
@@ -882,7 +895,7 @@ export default {
       );
       if (this.doResponse(error, res, "")) {
         this.incomeFlag = false;
-        Toast("收益领取成功！");
+        Toast(this.$t('receivedSuccess'));
         await this.queryTransation(res.hash, true);
       }
     },
@@ -895,11 +908,11 @@ export default {
     // 领取空投
     async getAirdrop() {
       if (!this.is_airdrop) {
-        Toast("空投还未开始");
+        Toast(this.$t('airdropNotStart'));
         return;
       }
       if (this.power != 0) {
-        Toast("我的算力为0才可以参加领取空投活动！");
+        Toast(this.$t('zeroAirdrop'));
         return;
       }
       let [error, res] = await this.to(
@@ -909,7 +922,7 @@ export default {
         })
       );
       if (this.doResponse(error, res, "")) {
-        Toast("空投领取成功，等待10秒后刷新即可看到算力！");
+        Toast(this.$t('airdropSuccess'));
         await this.queryTransation(res.hash);
       }
     },
@@ -923,11 +936,11 @@ export default {
     // 升级
     async getUpgrade() {
       if (!this.is_upgrade) {
-        Toast("现在还不能升级");
+        Toast(this.$t('notUpgrade'));
         return;
       }
       if (this.power != 0) {
-        Toast("算力为0才可以升级！");
+        Toast(this.$t('zeroUpgrade'));
         return;
       }
       const gasLimit = await this.getEstimateGas(() =>
@@ -945,7 +958,7 @@ export default {
         })
       );
       if (this.doResponse(error, res, "")) {
-        Toast("升级成功！");
+        Toast(this.$t('upgradeSuccess'));
         await this.queryTransation(res.hash);
       }
     },
@@ -956,7 +969,7 @@ export default {
       if (distance <= 0) {
         this.pledgeOutShow = true;
       } else {
-        Toast("取出质押需要在上次挖矿后24小时!");
+        Toast(this.$t('oneDayDrag'));
       }
     },
     // 获取质押数量
@@ -969,7 +982,7 @@ export default {
     // 取出质押
     async withDraw() {
       if (this.amount == "") {
-        Toast("请输入您的取出质押数量");
+        Toast(this.$t('amountPlaceholder'));
         return;
       }
       let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
@@ -989,14 +1002,14 @@ export default {
       if (this.doResponse(error, res)) {
         this.pledgeOutShow = false;
         this.amount = "";
-        Toast("提交请求成功，等待区块确认");
+        Toast(this.$t('blockSuccess'));
         await this.queryTransation(res.hash);
       }
     },
     // 质押
     async handlePlege() {
       if (this.amount == "") {
-        Toast("请输入您的质押数量");
+         Toast(this.$t('amountPlaceholder'));
         return;
       }
       let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
@@ -1040,7 +1053,7 @@ export default {
       }
       let [err, hash] = response;
       if (err == null) {
-        Toast("权限申请中...");
+        Toast(this.$t('permission'));
         this.pledgeShow = false;
         await this.queryTransation(hash.hash, null, async () => {
           const gasLimit2 = await this.getEstimateGas(() =>
@@ -1059,12 +1072,12 @@ export default {
             })
           );
           if (this.doResponse(error, res)) {
-            Toast("提交请求成功，等待区块确认");
+            Toast(this.$t('waitFeedback'));
             await this.queryTransation(res.hash);
           }
         });
       } else {
-        Toast("质押中...");
+        Toast(this.$t('pledging'));
         this.pledgeShow = false;
         const gasLimit2 = await this.getEstimateGas(() =>
           this.contract.estimateGas.depositToken(tokenAddr, amount, {
@@ -1087,7 +1100,7 @@ export default {
           })
         );
         if (this.doResponse(error, res)) {
-          Toast("提交请求成功，等待区块确认");
+           Toast(this.$t('waitFeedback'));
           await this.queryTransation(res.hash);
         }
       }
@@ -1095,7 +1108,7 @@ export default {
     // 查询Transaction
     async queryTransation(hash, updateTime, callback) {
       await this.provider.waitForTransaction(hash).then(async (receipt) => {
-        Toast("区块打包成功", receipt);
+        Toast(this.$t('blockSuccess'), receipt);
         if(callback) {
           callback();
         } else {
@@ -1117,17 +1130,7 @@ export default {
     },
     async calcExpectAmount(distance) {
       // 计算阶段奖励
-      let currRate = "0.001";
-      if (this.level == 1) {
-        let balance = await this.getQkiBalance();
-        if (balance < 1) {
-          currRate = "0.001";
-        } else {
-          currRate = RATE[this.level - 1];
-        }
-      } else {
-        currRate = RATE[this.level - 1];
-      }
+      let currRate = RATE[this.level - 1];
       // 奖励是否过期
       let day = Math.floor(Math.abs(distance) / this.epoch);
       day = day + 1;
@@ -1140,8 +1143,8 @@ export default {
             day = 1;
           }
         } else {
-          if (day > 5) {
-            day = 5;
+          if (day > this.maxDay) {
+            day = this.maxDay;
           }
         }
       }
@@ -1183,12 +1186,26 @@ export default {
         }
         return true;
       } else {
-        if (error.code == "INSUFFICIENT_FUNDS") {
-          Toast("矿工费不足");
-        } else if (error.code == 4001) {
-          Toast("用户取消");
-        } else {
-          Toast("错误代码:" + error.code);
+        try{
+          if (error.code === 'UNPREDICTABLE_GAS_LIMIT') {
+            Toast('错误:' + error.error)
+          } else if (error.code === 'INSUFFICIENT_FUNDS') {
+            Toast('矿工费不足')
+          } else if (error.code === 4001 || error === 'cancelled') {
+            Toast('交易取消')
+          } else {
+            if (error.data.message.indexOf('gas') > 0) {
+              Toast('矿工费不足')
+            } else if (error.data.message.indexOf('RPC') > 0) {
+              Toast('节点异常，请切换节点')
+            } else if (error.data.message.indexOf('reverted') > 0) {
+              Toast('错误:' + error.data.message)
+            } else {
+              Toast('异常')
+            }
+          }
+        } catch(e) {
+          Toast('异常')
         }
         return false;
       }
@@ -1217,6 +1234,12 @@ export default {
     tab(num) {
       this.active = num;
     },
+    changeLang() {
+      this.dropdown = false
+      const currLang = this.$i18n.locale === 'en' ? 'zh' : 'en'
+      this.$i18n.locale = currLang
+      localStorage.setItem('APP_LANG', currLang)
+    }
   },
   // computed: {
   //   receiveAble: function(){
@@ -1885,5 +1908,47 @@ export default {
   .hy {
     background: linear-gradient(135deg, #005aff 0%, #337ce4 100%);
   }
+ 
 }
+ .p_relative{
+    position: relative;
+  }
+.border_btn{
+      border: 2px solid rgba(255,255,255, 0.3);
+      border-radius: 8px;
+      padding: 20px 25px; 
+      font-size: 12px;
+      color: #fff;
+      &.purpler_color{
+        border-color: #2D2484;
+      }
+      &.padd_min{
+        padding: 12px 30px; 
+      }
+      .mdex_img{
+        width: 109px;
+        height: 35px;
+        margin-right: 20px;
+      }
+      .arrow_down_icon{
+        width: 15px;
+        height: 21px;
+        margin-left: 8px;
+      }
+    }
+    .dropdown{
+      border: 2px solid rgba(255,255,255, 0.3);
+      border-radius: 8px;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 90px;
+      z-index: 99;
+      background-color: #fff;
+      span{
+        padding-top: 15px;
+        padding-bottom: 15px;
+        color: #000;
+      }
+    }
 </style>
