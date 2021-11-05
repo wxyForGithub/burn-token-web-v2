@@ -552,7 +552,11 @@ export default {
   data() {
     return {
       contractAddress: "", // 合约地址
-      oldContractAddress: "", // 老合约地址，用于查询power
+      oldContractAddress: "", // 老合约地址，用于查询升级power
+      tokenSymbol:"",//本应用token的符号
+      burnTokenSymbol:"",//质押token的符号
+      usdtContractAddress: "",//质押的token合约地址
+      maxDay: 7, // 最大累计的天数
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
       balance: "0.00", // 我的余额
@@ -561,8 +565,6 @@ export default {
       totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
       level: 1,
-      tokenSymbol:"",
-      burnTokenSymbol:"",
       lvShow: false,
       bgShow: false,
       pledgeShow: false,
@@ -594,14 +596,12 @@ export default {
       show_upgrade: false,
       oldPower: 0,
       minUsdt: 0,
-      usdtDecimals: 3,
+      usdtDecimals: 8,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "",//质押的token合约地址
       usdtBalanceOf: 0,
       totalUsdtAmount: 0,
       min_gasprice: 150,
-      maxDay: 7, // 最大累计的天数
       dropdown: false,
     };
   },
