@@ -9,7 +9,7 @@ const messages = {
     levelDesc: '等级说明',
     oldPower: '老合约算力',
     langShortZh: '中',
-    langEn: 'englist',
+    langEn: 'English',
     langZh: '中文',
     income: '挖矿年化收益',
     contractAddress: '合约地址',
