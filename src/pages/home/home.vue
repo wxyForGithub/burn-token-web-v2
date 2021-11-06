@@ -634,7 +634,6 @@ export default {
         this.signer
       );
       this.contract = contract;
-      await this.getDecimals();
       await this.getEpoch();
       let [error, res] = await this.to(this.contract.totalUsersAmount());
       this.doResponse(error, res, "totalUsersAmount");
@@ -697,7 +696,7 @@ export default {
           this.calcExpectAmount(10);
         } else {
           Toast(this.$t('noPower'));
-          return; 
+          return;
         }
       } else {
         this.incomeFlag = true;
@@ -739,11 +738,6 @@ export default {
     async getTotalSupply() {
       let [error, res] = await this.to(this.contract.totalSupply());
       this.doResponse(error, res, "totalSupply", this.decimals);
-    },
-    // 得到精度
-    async getDecimals() {
-      let [error, res] = await this.to(this.contract.decimals());
-      this.doResponse(error, res, "decimals");
     },
     // 得到个人算力
     async getPower() {
