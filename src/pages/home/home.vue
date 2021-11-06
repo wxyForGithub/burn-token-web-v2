@@ -555,6 +555,7 @@ export default {
       oldContractAddress: "", // 老合约地址，用于查询升级power
       tokenSymbol:"",//本应用token的符号
       burnTokenSymbol:"",//质押token的符号
+      usdtDecimals: 8,
       usdtContractAddress: "",//质押的token合约地址
       maxDay: 7, // 最大累计的天数
       contract: null, // 当前的合约对象
@@ -596,7 +597,6 @@ export default {
       show_upgrade: false,
       oldPower: 0,
       minUsdt: 0,
-      usdtDecimals: 8,
       usdtSymbol: "",
       pledgeUsdtAmount: 0, // 质押usdt的数量
       usdtBalanceOf: 0,
@@ -666,16 +666,6 @@ export default {
       if (this.doResponse(error2, token2)) {
         this.usdtContractAddress = token2
         const token2Contract = new ethers.Contract(token2, abi, this.signer);
-        let [error2_2, token2Decimals] = await this.to(
-          token2Contract.decimals()
-        );
-        if (this.doResponse(error2_2, token2Decimals)) {
-          this.usdtDecimals = token2Decimals;
-        }
-        let [error2_3, token2Symbol] = await this.to(token2Contract.symbol());
-        if (this.doResponse(error2_3, token2Symbol)) {
-          this.burnTokenSymbol = token2Symbol;
-        }
         let [error2_4, token2Min] = await this.to(this.contract.anti_bot());
         this.doResponse(error2_4, token2Min, "minUsdt", this.usdtDecimals);
 
