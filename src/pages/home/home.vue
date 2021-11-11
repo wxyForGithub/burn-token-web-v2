@@ -570,10 +570,6 @@ export default {
       inviteAddressInput: "", // 输入邀请人的地址
       rewardCount: 0, // 获取累计收益
       incomeFlag: false, // 领取收益弹框
-      deadline: "", // 截止日期
-      hour: "00", // 时
-      minutes: "00", // 分
-      seconds: "00", // 秒
       showBurnFlag: false, // 燃烧算力弹框
       receiveAble: false, // 收益是否可以被领取
       amount: "", // 燃烧数量
@@ -586,19 +582,20 @@ export default {
       show_airdrop: true, //
       show_upgrade: false,
       oldPower: 0,
-      minUsdt: 0,
-      usdtDecimals: 3,
-      usdtSymbol: "",
-      pledgeUsdtAmount: 0, // 质押usdt的数量
-      usdtContractAddress: "",//质押的token合约地址
-      usdtBalanceOf: 0,
-      totalUsdtAmount: 0,
       min_gasprice: 150,
       maxDay: 7, // 最大累计的天数
       dropdown: false,
       pledageList: [],
       currPledageIndex: 0,
-      currPldeage: null
+      currPldeage: null,
+      funcNameArgs: [],
+      // funcNameArgs: [{
+      //   token: 'requireToken2',
+      //   minAmount: 'requireToken2Num'
+      // },{
+      //   token: 'requireToken',
+      //   minAmount: 'requireTokenNum'
+      // }] // 请求质押币种的合约方法名；token为获取address的方法名，minAmount为获取最小质押数量的方法名
     };
   },
   created() {
@@ -626,7 +623,6 @@ export default {
       _gasPrice = ethers.utils.formatUnits(_gasPrice, "gwei")
       if (_gasPrice > this.min_gasprice)
       this.min_gasprice = _gasPrice;//如果网络当前矿工费高于预设最小值，使用当前值
-      console.log(this.min_gasprice)
 
       var contract = new ethers.Contract(
         this.contractAddress,
@@ -657,18 +653,12 @@ export default {
         this.show_airdrop = false
       }
       
-      await this.initPledageList([{
-        token: 'requireToken2',
-        minAmount: 'requireToken2Num'
-      },{
-        token: 'requireToken',
-        minAmount: 'requireTokenNum'
-      }])
+      await this.initPledageList(this.funcNameArgs)
     },
     async initPledageList(params) {
         if(Array.isArray(params)) {
           for(let i = 0, len = params.length; i < len; i++) {
-            const info = await this.initContract1(params[i].token, params[i].minAmount)
+            const info = await this.initContract(params[i].token, params[i].minAmount)
             this.pledageList.push(info)
           }
         }
@@ -680,7 +670,7 @@ export default {
         }
     },
     // 获取合约初始化数据，以后都不会更新的方法，只请求一次
-    async initContract1(tFuncName, minFuncName) {
+    async initContract(tFuncName, minFuncName) {
       let pleageInfo = {}
       // 获取token2
       let [error2, token2] = await this.to(this.contract[tFuncName]());
@@ -712,48 +702,11 @@ export default {
           let Value = this.hex2int(hex) / ethers.BigNumber.from(10).pow(token2Decimals);
           pleageInfo.totalBalance = Value;
         }
-        pleageInfo.pledgeAmount = await this.getPledgeAmount1(token2, token2Decimals)
+        pleageInfo.pledgeAmount = await this.getPledgeAmount(token2, token2Decimals)
       }
       return pleageInfo
     },
 
-    // 获取合约初始化数据，以后都不会更新的方法，只请求一次
-    async initContract() {
-      // 获取token2
-      let [error2, token2] = await this.to(this.contract.requireToken());
-      if (this.doResponse(error2, token2)) {
-        this.usdtContractAddress = token2
-        const token2Contract = new ethers.Contract(token2, abi, this.signer);
-        let [error2_2, token2Decimals] = await this.to(
-          token2Contract.decimals()
-        );
-        if (this.doResponse(error2_2, token2Decimals)) {
-          this.usdtDecimals = token2Decimals;
-        }
-        let [error2_3, token2Symbol] = await this.to(token2Contract.symbol());
-        if (this.doResponse(error2_3, token2Symbol)) {
-          this.burnTokenSymbol = token2Symbol;
-        }
-        let [error2_4, token2Min] = await this.to(this.contract.anti_bot());
-        this.doResponse(error2_4, token2Min, "minUsdt", this.usdtDecimals);
-
-        let [error, usdtBalance] = await this.to(
-          token2Contract.balanceOf(this.contractAddress)
-        );
-        this.doResponse(
-          error,
-          usdtBalance,
-          "totalUsdtAmount",
-          this.usdtDecimals
-        );
-      }
-
-      // 获取是否可以进行挖矿
-      let [error3, res1] = await this.to(this.contract.is_mint());
-      if (this.doResponse(error3, res1)) {
-        this.is_mint = res1;
-      }
-    },
     // 展示领取收益
     async showIncome() {
       // 新用户且算力不为0，进入页面就可以领取一次收益
@@ -1030,15 +983,8 @@ export default {
         Toast(this.$t('oneDayDrag'));
       }
     },
-    // 获取质押数量
-    async getPledgeAmount() {
-      let [erro1, Token1balance] = await this.to(
-        this.contract.TokenBalanceOf(this.myAddress, this.usdtContractAddress)
-      );
-      this.doResponse(erro1, Token1balance, "usdtBalanceOf", this.usdtDecimals);
-    },
      // 获取质押数量
-    async getPledgeAmount1(tokenAddr, decimal) {
+    async getPledgeAmount(tokenAddr, decimal) {
       let [erro1, Token1balance] = await this.to(
         this.contract.TokenBalanceOf(this.myAddress, tokenAddr)
       );
@@ -1048,8 +994,7 @@ export default {
           return Value
         } else {
           return 0
-        }
-      // this.doResponse(erro1, Token1balance, "usdtBalanceOf", this.usdtDecimals); 
+        } 
     },
     // 取出质押
     async withDraw() {
@@ -1195,7 +1140,7 @@ export default {
           await this.getPower();
           await this.getTotalSupply();
           for(let i = 0, len = this.pledageList.length; i < len; i++) {
-            this.pledageList[i].pledgeAmount = await this.getPledgeAmount1(this.pledageList[i].address, this.pledageList[i].decimal);
+            this.pledageList[i].pledgeAmount = await this.getPledgeAmount(this.pledageList[i].address, this.pledageList[i].decimal);
           }
           if(this.power != 0) {
             this.show_upgrade = false
