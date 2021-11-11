@@ -170,8 +170,7 @@
       <div class="my-box pleage-box">
         <div class="copy space-between">
           <div class="flex_v_start flex1">
-            <div class="num">{{burnTokenSymbol}}{{$t('pledgeAmount')}}</div>
-            <div class="blue_num">{{ usdtBalanceOf }}</div>
+            <div class="num" v-for="(pledge, index) in pledageList" :key="index">{{pledge.symbol}}{{$t('pledgeAmount')}}<span class="blue_num">{{  pledge.pledgeAmount }}</span></div>
             <div class="flex_h">
               <div class="flex-box round" @click="pledgeShow = true">
                 <img
@@ -195,28 +194,12 @@
               </div>
             </div>
           </div>
-          <!-- <div class="flex_v_start flex1"> -->
-          <!-- <div class="num">USDT质押数量</div>
-            <div class="blue_num">{{ usdtBalanceOf }}</div> -->
-          <!-- <div
-              class="flex-box round"
-              style="background-color: #585858"
-              @click="openPledgeOut"
-            >
-              <img
-                :src="require('../../assets/' + assetUrl + 'down.png')"
-                class="down_img"
-                mode
-              />
-              取出
-            </div> -->
-          <!-- </div> -->
         </div>
-        <div class="item" style="margin-top: 10px">
+        <div class="item" style="margin-top: 10px" v-for="(pledge, index) in pledageList" :key="index">
           <div class="align-center">
-            <div class="text">
-              {{$t('totalLiquitityPledge', {symbol: burnTokenSymbol})}}
-              <span style="color: red">{{ totalUsdtAmount }}</span> {{burnTokenSymbol}}
+            <div class="text" >
+              {{$t('totalLiquitityPledge', {symbol: pledge.symbol})}}
+              <span style="color: red">{{ pledge.totalBalance }}</span> {{pledge.symbol}}
             </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
@@ -232,8 +215,12 @@
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
         </div>
 
-        <div style="color: red; margin-top: 10px; font-size: 12px">
-          {{$t('minPledgeRule', {minAmount: minUsdt, pledgeTokenSymbol: burnTokenSymbol, tokenSymbol})}}
+        <div style="color: red; margin-top: 10px; font-size: 12px" v-if="pledageList.length == 1">
+          {{$t('minPledgeRule', {minAmount: pledageList[0].pledgeAmount, pledgeTokenSymbol: pledageList[0].symbol, tokenSymbol})}}
+        </div>
+        <div style="color: red; margin-top: 10px; font-size: 12px" v-if="pledageList.length == 2">
+          {{$t('minPledgeRule1', {minAmount: pledageList[0].min, pledgeTokenSymbol: pledageList[0].symbol,
+          minAmount1: pledageList[1].min, pledgeTokenSymbol2: pledageList[1].symbol, tokenSymbol})}}
         </div>
       </div>
 
@@ -481,9 +468,12 @@
           <div class="align-center">
             <div class="text">{{$t('unlockPledge')}}</div>
           </div>
+          <div class="tag_wrap">
+              <div class="tag" v-for="(pledge, index) in pledageList" :key="index" :class="currPledageIndex == index ? 'curr' : ''" @click="changeTab(index)">{{pledge.symbol}}</div>
+            </div>
           <div class="text1 alignLeft">
             {{$t('unlockPledgeAmount')}}
-            <span>{{ usdtBalanceOf }} </span>{{burnTokenSymbol}}
+            <span>{{ currPldeage && currPldeage.pledgeAmount }} </span>{{currPldeage && currPldeage.symbol}}
           </div>
 
           <div class="input-box space-between">
@@ -496,9 +486,9 @@
             />
             <div class="align-center">
               <div class="text2">
-                {{burnTokenSymbol}}</div>
+                {{currPldeage && currPldeage.symbol}}</div>
                 <div class="line"></div>
-                <div class="text3" @click="amount = usdtBalanceOf">{{$t('all')}}</div>
+                <div class="text3" @click="amount = (currPldeage && currPldeage.pledgeAmount)">{{$t('all')}}</div>
               </div>
           </div>
             <div class="tit">* {{$t('withdrawRule')}}</div>
@@ -514,8 +504,11 @@
             <div class="align-center">
               <div class="text">{{$t('pledge')}}</div>
             </div>
+            <div class="tag_wrap">
+              <div class="tag" v-for="(pledge, index) in pledageList" :key="index" :class="currPledageIndex == index ? 'curr' : ''" @click="changeTab(index)">{{pledge.symbol}}</div>
+            </div>
             <div class="text1 alignLeft">
-              {{$t('pledgeTips', {minAmount: minUsdt, symbol: burnTokenSymbol})}}
+              {{$t('pledgeTips', {minAmount: currPldeage && currPldeage.min, symbol: currPldeage && currPldeage.symbol})}}
             </div>
             <div class="input-box space-between">
               <input
@@ -527,7 +520,7 @@
               />
               <div class="align-center">
                 <div class="line"></div>
-                <div class="text2">{{burnTokenSymbol}}</div>
+                <div class="text2">{{ currPldeage &&currPldeage.symbol}}</div>
               </div>
             </div>
             <div class="flex-box btn" @click="handlePlege">{{$t('pledge')}}</div>
@@ -603,6 +596,9 @@ export default {
       min_gasprice: 150,
       maxDay: 7, // 最大累计的天数
       dropdown: false,
+      pledageList: [],
+      currPledageIndex: 0,
+      currPldeage: null
     };
   },
   created() {
@@ -617,6 +613,10 @@ export default {
     show(num) {
       this.type = num;
       this.bgShow = true;
+    },
+    changeTab(index) {
+      this.currPledageIndex = index;
+      this.currPldeage = this.pledageList[index]
     },
     async init() {
       if (this.signer == null) {
@@ -656,9 +656,67 @@ export default {
       } else {
         this.show_airdrop = false
       }
-      await this.initContract();
-      this.getPledgeAmount();
+      
+      await this.initPledageList([{
+        token: 'requireToken2',
+        minAmount: 'requireToken2Num'
+      },{
+        token: 'requireToken',
+        minAmount: 'requireTokenNum'
+      }])
     },
+    async initPledageList(params) {
+        if(Array.isArray(params)) {
+          for(let i = 0, len = params.length; i < len; i++) {
+            const info = await this.initContract1(params[i].token, params[i].minAmount)
+            this.pledageList.push(info)
+          }
+        }
+        this.currPldeage = this.pledageList[0]
+        // 获取是否可以进行挖矿
+        let [error3, res1] = await this.to(this.contract.is_mint());
+        if (this.doResponse(error3, res1)) {
+          this.is_mint = res1;
+        }
+    },
+    // 获取合约初始化数据，以后都不会更新的方法，只请求一次
+    async initContract1(tFuncName, minFuncName) {
+      let pleageInfo = {}
+      // 获取token2
+      let [error2, token2] = await this.to(this.contract[tFuncName]());
+      if (this.doResponse(error2, token2)) {
+        pleageInfo.address = token2
+        const token2Contract = new ethers.Contract(token2, abi, this.signer);
+        let [error2_2, token2Decimals] = await this.to(
+          token2Contract.decimals()
+        );
+        if (this.doResponse(error2_2, token2Decimals)) {
+          pleageInfo.decimal = token2Decimals
+        }
+        let [error2_3, token2Symbol] = await this.to(token2Contract.symbol());
+        if (this.doResponse(error2_3, token2Symbol)) {
+          pleageInfo.symbol = token2Symbol.toUpperCase();
+        }
+        let [error2_4, token2Min] = await this.to(this.contract[minFuncName]());
+        if(this.doResponse(error2_4, token2Min)) {
+          let hex = ethers.utils.hexValue(token2Min);
+          let Value = this.hex2int(hex) / ethers.BigNumber.from(10).pow(token2Decimals);
+          pleageInfo.min = Value;
+        }
+
+        let [error, usdtBalance] = await this.to(
+          token2Contract.balanceOf(this.contractAddress)
+        );
+        if(this.doResponse(error, usdtBalance)) {
+          let hex = ethers.utils.hexValue(usdtBalance);
+          let Value = this.hex2int(hex) / ethers.BigNumber.from(10).pow(token2Decimals);
+          pleageInfo.totalBalance = Value;
+        }
+        pleageInfo.pledgeAmount = await this.getPledgeAmount1(token2, token2Decimals)
+      }
+      return pleageInfo
+    },
+
     // 获取合约初始化数据，以后都不会更新的方法，只请求一次
     async initContract() {
       // 获取token2
@@ -979,14 +1037,32 @@ export default {
       );
       this.doResponse(erro1, Token1balance, "usdtBalanceOf", this.usdtDecimals);
     },
+     // 获取质押数量
+    async getPledgeAmount1(tokenAddr, decimal) {
+      let [erro1, Token1balance] = await this.to(
+        this.contract.TokenBalanceOf(this.myAddress, tokenAddr)
+      );
+      if(this.doResponse(erro1, Token1balance)) {
+          let hex = ethers.utils.hexValue(Token1balance);
+          let Value = this.hex2int(hex) / ethers.BigNumber.from(10).pow(decimal);
+          return Value
+        } else {
+          return 0
+        }
+      // this.doResponse(erro1, Token1balance, "usdtBalanceOf", this.usdtDecimals); 
+    },
     // 取出质押
     async withDraw() {
+      if(this.currPldeage == null) {
+        Toast(this.$t('coinPlaceholder'))
+        return 
+      }
       if (this.amount == "") {
         Toast(this.$t('amountPlaceholder'));
         return;
       }
-      let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
-      let tokenAddr = this.usdtContractAddress;
+      let amount = ethers.utils.parseUnits(this.amount.toString(), this.currPldeage.decimal);
+      let tokenAddr = this.currPldeage.address;
       const gasLimit = await this.getEstimateGas(() =>
         this.contract.estimateGas.withdrawToken(tokenAddr, amount,{gasPrice: ethers.utils.parseUnits(String(this.min_gasprice), "gwei"),})
       );
@@ -1008,13 +1084,17 @@ export default {
     },
     // 质押
     async handlePlege() {
+      if(this.currPldeage == null) {
+        Toast(this.$t('coinPlaceholder'))
+        return 
+      }
       if (this.amount == "") {
          Toast(this.$t('amountPlaceholder'));
         return;
       }
-      let amount = ethers.utils.parseUnits(this.amount.toString(), this.usdtDecimals);
+      let amount = ethers.utils.parseUnits(this.amount.toString(), this.currPldeage.decimal);
 
-      let tokenAddr = this.usdtContractAddress;
+      let tokenAddr = this.currPldeage.address;
       let contract = new ethers.Contract(tokenAddr, abi, this.signer);
       let [err2, allowce] = await this.to(
         contract.allowance(this.myAddress, this.contract.address)
@@ -1023,7 +1103,6 @@ export default {
 
       if (this.doResponse(err2, allowce)) {
         const hex = ethers.utils.hexValue(allowce);
-        console.log(this.hex2int(hex),)
         const Value = Decimal.div(
           this.hex2int(hex),
           ethers.BigNumber.from(10).pow(this.decimals)
@@ -1115,7 +1194,9 @@ export default {
           await this.getBalance();
           await this.getPower();
           await this.getTotalSupply();
-          this.getPledgeAmount();
+          for(let i = 0, len = this.pledageList.length; i < len; i++) {
+            this.pledageList[i].pledgeAmount = await this.getPledgeAmount1(this.pledageList[i].address, this.pledageList[i].decimal);
+          }
           if(this.power != 0) {
             this.show_upgrade = false
           }
@@ -1418,6 +1499,25 @@ export default {
         width: 34px;
         height: 34px;
       }
+    }
+  }
+}
+.tag_wrap{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 20px;
+  .tag{
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    padding: 8px 20px;
+    display: inline-block;
+    margin-right: 20px;
+    color: #737278;
+    font-size: 28px;
+    &.curr{
+      background-color: #dc5242;
+      color: #fff;
     }
   }
 }
