@@ -148,7 +148,7 @@
         </div>
         <div class="copy copy1 space-between">
           <div class="flex_v_start flex1">
-            <div class="num">{{$('oldPower')}}</div>
+            <div class="num">{{$t('oldPower')}}</div>
             <div class="blue_num">{{this.oldPower}}</div>
           </div>
           <div
