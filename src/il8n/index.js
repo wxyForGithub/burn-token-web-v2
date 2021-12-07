@@ -48,7 +48,7 @@ const messages = {
     whitepaper: '白皮书下载',
     receivedTimeCalc: '领取时间计算器',
     receivedTimeCalcTips: '本计算仅供参考',
-    Cumulative: '累计第',
+    Cumulative: '第',
     receivedTime: '次领取时间',
     showMore: '显示30次领取时间',
     hideMore: '显示7次领取时间',

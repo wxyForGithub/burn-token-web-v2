@@ -109,9 +109,9 @@
       <div class="line" v-if="receiveTimestamp != 0">
         {{$t('prevDragTime')}}：{{ receiveTime }}
       </div>
-      <div class="line" v-if="receiveTimestamp != 0" style="border-top: none">
+      <!-- <div class="line" v-if="receiveTimestamp != 0" style="border-top: none">
         {{$t('nextDragTime')}}：{{ nextReceiveTime }}
-      </div>
+      </div> -->
 
       <div class="my-box airdrop-box" v-if="show_airdrop && !show_upgrade">
         <div class="top space-between">
@@ -223,6 +223,10 @@
           minAmount1: pledageList[1].min, pledgeTokenSymbol2: pledageList[1].symbol, tokenSymbol})}}
         </div>
       </div>
+      <div v-if="receiveTimestamp != 0"><div class="flex_h_between time_item" v-for="(item, index) in nextReceiveTimeArray" :key="index">
+          <span class="fStyle22_c0c0c0">{{$t('Cumulative')}}{{index+1}}{{$t('receivedTime')}}</span>
+          <span class="fStyle22_c0c0c0">{{item}}</span>
+        </div></div>
 
       <div class="my-box">
         <div class="top space-between">
@@ -566,6 +570,8 @@ export default {
       receiveTimestamp: 0, // 上次领取奖励的时间戳
       receiveTime: "", // 上次领取奖励的时间
       nextReceiveTime: "", // 下次领取奖励的时间
+      nextReceiveTimeArray: [], // 下次领取奖励的时间数组
+      nextReceiveTimeLen: 5, // 显示领取时间的长度
       inviteAddress: "", // 已绑定邀请人地址
       inviteAddressInput: "", // 输入邀请人的地址
       rewardCount: 0, // 获取累计收益
@@ -589,6 +595,7 @@ export default {
       currPledageIndex: 0,
       currPldeage: null,
       funcNameArgs: [],
+      startTime: 0,
       // funcNameArgs: [{
       //   token: 'requireToken2',
       //   minAmount: 'requireToken2Num'
@@ -805,6 +812,8 @@ export default {
     async getEpoch() {
       let [error, res] = await this.to(this.contract.epoch());
       this.doResponse(error, res, "epoch");
+      let [error1, res1] = await this.to(this.contract.start_time());
+      this.doResponse(error1, res1, "startTime");
     },
     // 获取邀请人数
     async getinviteCount() {
@@ -1295,7 +1304,14 @@ export default {
     receiveTimestamp(newTime) {
       if (newTime != 0) {
         this.receiveTime = this.timestampToTime(this.receiveTimestamp);
-         this.nextReceiveTime = this.timestampToTime(this.receiveTimestamp + this.epoch);
+        let tempTimestamp = Decimal.add(this.receiveTimestamp, this.epoch).toFixed()
+        this.nextReceiveTime = this.timestampToTime(tempTimestamp);
+        this.nextReceiveTimeArray = [this.timestampToTime(tempTimestamp)]
+        let nowTimeStr = Date.now().toString().substring(0, 10);
+        for(let i = 0 ; i < this.nextReceiveTimeLen - 1; i++) {
+          tempTimestamp =  Decimal.add(Decimal.add('86400', (Decimal.div(Decimal.sub(nowTimeStr, this.startTime), 365)).toFixed().split('.')[0]), tempTimestamp).toFixed()
+          this.nextReceiveTimeArray.push(this.timestampToTime(tempTimestamp));
+        }
       }
       // 获取当前时间
       let nowTimeStr = Date.now().toString().substring(0, 10);
@@ -1504,6 +1520,17 @@ export default {
     margin: 53px auto 0 auto;
     padding-top: 20px;
     border-top: 1px solid #f2f2f2;
+  }
+  .time_item{
+    // padding-top: 20px;
+    padding: 10px 30px;
+    // margin: 20px auto 0 auto;
+    
+  }
+  .fStyle22_c0c0c0{
+    color: #c0c0c0;
+    font-size: 22px;
+    text-align: center;
   }
 
   .my-box {
