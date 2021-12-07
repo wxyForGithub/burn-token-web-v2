@@ -121,7 +121,36 @@ const initEth = {
             .then((chainId) => {
               //可以把
               if (chainId != GLOBAL_CONFIGS.chainId)
+              {
                 Toast(GLOBAL_CONFIGS.toggleToast)
+                //小狐狸自动切换主网
+                try {
+                    window.ethereum.
+                    request({
+                      method: 'wallet_addEthereumChain',
+                      params: [{ chainId: GLOBAL_CONFIGS.chainIdHex ,
+                      chainName: GLOBAL_CONFIGS.chainName,
+                      nativeCurrency: {
+                        name: GLOBAL_CONFIGS.nativeCurrency,
+                        symbol: GLOBAL_CONFIGS.nativeCurrency, // 2-6 characters long
+                        decimals: 18
+                      },
+                      rpcUrls: GLOBAL_CONFIGS.rpcUrl,
+                      blockExplorerUrls:GLOBAL_CONFIGS.blockExplorerUrls
+                      }],
+                    }).then((chainId) => {
+                      console.log(chainId)
+                    }).catch((error) => {
+                      // If the request fails, the Promise will reject with an error.
+                      console.log(error)
+                    });
+                  } catch (addError) {
+                    // handle "add" error
+                    console.error(addError);
+                  }
+
+
+              }
               this.chainId = chainId;
             })
             .catch((error) => {
@@ -136,9 +165,9 @@ const initEth = {
           if (chainId != GLOBAL_CONFIGS.chainIdHex) {
             Toast(GLOBAL_CONFIGS.useToast)
           }
-          // setTimeout(function () {
-          //   window.location.reload()
-          // }, 2500)
+          setTimeout(function () {
+            window.location.reload()
+          }, 2500)
         });
 
         this.provider = customHttpProvider;

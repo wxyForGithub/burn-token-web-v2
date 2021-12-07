@@ -148,7 +148,7 @@
         </div>
         <div class="copy copy1 space-between">
           <div class="flex_v_start flex1">
-            <div class="num">{{$('oldPower')}}</div>
+            <div class="num">{{$t('oldPower')}}</div>
             <div class="blue_num">{{this.oldPower}}</div>
           </div>
           <div
@@ -549,7 +549,12 @@ export default {
   data() {
     return {
       contractAddress: "", // 合约地址
-      oldContractAddress: "", // 老合约地址，用于查询power
+      oldContractAddress: "", // 老合约地址，用于查询升级power
+      tokenSymbol:"",//本应用token的符号
+      burnTokenSymbol:"",//质押token的符号
+      usdtDecimals: 8,
+      usdtContractAddress: "",//质押的token合约地址
+      maxDay: 7, // 最大累计的天数
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
       balance: "0.00", // 我的余额
@@ -558,8 +563,6 @@ export default {
       totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
       level: 1,
-      tokenSymbol:"",
-      burnTokenSymbol:"",
       lvShow: false,
       bgShow: false,
       pledgeShow: false,
@@ -589,7 +592,6 @@ export default {
       show_upgrade: false,
       oldPower: 0,
       min_gasprice: 150,
-      maxDay: 7, // 最大累计的天数
       dropdown: false,
       pledageList: [],
       currPledageIndex: 0,
@@ -637,7 +639,6 @@ export default {
         this.signer
       );
       this.contract = contract;
-      await this.getDecimals();
       await this.getEpoch();
       let [error, res] = await this.to(this.contract.totalUsersAmount());
       this.doResponse(error, res, "totalUsersAmount");
@@ -725,7 +726,7 @@ export default {
           this.calcExpectAmount(10);
         } else {
           Toast(this.$t('noPower'));
-          return; 
+          return;
         }
       } else {
         this.incomeFlag = true;
@@ -767,11 +768,6 @@ export default {
     async getTotalSupply() {
       let [error, res] = await this.to(this.contract.totalSupply());
       this.doResponse(error, res, "totalSupply", this.decimals);
-    },
-    // 得到精度
-    async getDecimals() {
-      let [error, res] = await this.to(this.contract.decimals());
-      this.doResponse(error, res, "decimals");
     },
     // 得到个人算力
     async getPower() {
