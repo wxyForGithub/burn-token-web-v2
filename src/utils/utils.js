@@ -251,8 +251,6 @@ const timeUtils = {
       if (maxtime >= 0) {
         // 距离结束剩下多少天
         let day = Math.floor(maxtime / 86400);
-        // 得到剩下的分钟数
-        maxtime -= day * 86400;
         let hour = Math.floor(maxtime / 3600);
         // 得到剩下的分钟数
         maxtime -= hour * 3600;
