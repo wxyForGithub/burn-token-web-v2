@@ -1305,7 +1305,7 @@ export default {
         this.nextReceiveTimeArray = [this.timestampToTime(tempTimestamp)]
         let nowTimeStr = Date.now().toString().substring(0, 10);
         for(let i = 0 ; i < this.nextReceiveTimeLen - 1; i++) {
-          tempTimestamp =  Decimal.add(Decimal.add('86400', (Decimal.div(Decimal.sub(nowTimeStr, this.startTime), 365)).toFixed().split('.')[0]), tempTimestamp).toFixed()
+          tempTimestamp =  Decimal.add(Decimal.add('86400', (Decimal.div(Decimal.sub(tempTimestamp, this.startTime), 365)).toFixed().split('.')[0]), tempTimestamp).toFixed()
           this.nextReceiveTimeArray.push(this.timestampToTime(tempTimestamp));
         }
       }
