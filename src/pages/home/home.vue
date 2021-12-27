@@ -245,7 +245,7 @@
           <img
             :src="require('../../assets/' + assetUrl + 'copy1.png')"
             class="copy-img"
-            @click="h5Copy(myAddress)"
+            @click="copyShareLink(myAddress)"
             mode
           />
         </div>
@@ -532,6 +532,28 @@
           </div>
         </div>
       </div>
+      <!-- 是否绑定邀请人 -->
+    <div class="bg" v-show="showBinder">
+      <div class="flex-box">
+        <div class="box1">
+          <div class="align-center">
+            <img
+              :src="require('../../assets/' + assetUrl + 'lqjl.png')"
+              class="wq"
+              mode
+            />
+            <div class="text">{{$t('binder')}}</div>
+          </div>
+          <div class="text5">
+            <span>{{subAddress(urlAddress)}}</span>
+            <br />{{$t('asInviter')}}
+          </div>
+          <!-- <div class="tit tit1">我当前通证算力总量：{{ power }}</div> -->
+          <div class="flex-box btn" @click="registration">{{$t('yes')}}</div>
+          <div class="text4" @click="showBinder = false">{{$t('cancel')}}</div>
+        </div>
+      </div>
+    </div>
     </div>
     <!-- </div>
   </div> -->
@@ -580,6 +602,7 @@ export default {
       rewardCount: 0, // 获取累计收益
       incomeFlag: false, // 领取收益弹框
       showBurnFlag: false, // 燃烧算力弹框
+      showBinder: false,
       receiveAble: false, // 收益是否可以被领取
       amount: "", // 燃烧数量
       expectAmount: 0, // 预估收益
@@ -598,6 +621,7 @@ export default {
       currPldeage: null,
       funcNameArgs: [],
       startTime: 0,
+      urlAddress: '',
       // funcNameArgs: [{
       //   token: 'requireToken2',
       //   minAmount: 'requireToken2Num'
@@ -662,6 +686,15 @@ export default {
       }
       
       await this.initPledageList(this.funcNameArgs)
+      let {address} = this.$route.query
+      if(address) {
+        this.urlAddress = address
+        if(this.inviteAddress == '') {
+          this.inviteAddressInput = address
+          this.showBinder = true
+        }
+      }
+      // console.log(address)
     },
     async initPledageList(params) {
         if(Array.isArray(params)) {
@@ -859,6 +892,7 @@ export default {
       if (this.doResponse(error, res)) {
         Toast(this.$t('bindSuccess'));
         this.inviteAddress = this.inviteAddressInput;
+        this.showBinder = false
       }
     },
     // 燃烧
@@ -1245,6 +1279,19 @@ export default {
     inputAll() {
       this.amount = this.balance;
     },
+    subAddress (addr, subLen = 6 ) {
+      const address = addr
+      if (address !== '') {
+        const prevStr = address.substring(0, subLen)
+        const lastStr = address.substring(
+          address.length - subLen,
+          address.length,
+        )
+        return prevStr + '...' + lastStr
+      } else {
+        return ''
+      }
+    },
     async getEstimateGas(fn) {
       const [err, res] = await this.to(fn());
       if (this.doResponse(err, res)) {
@@ -1255,6 +1302,11 @@ export default {
       } else {
         return 0;
       }
+    },
+    copyShareLink(addr) {
+      const origin = (window.location.origin || '').split('#')[0]
+      const url = origin + '/#/home?address='+addr
+      this.h5Copy(url);
     },
     joinOther() {
       this.h5Copy("https://discord.gg/wEZakneHX5");
