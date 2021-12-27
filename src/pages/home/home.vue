@@ -97,7 +97,7 @@
           />
           <div class="text">{{$t('levelDesc')}}</div>
         </div>
-        <div class="item" @click="h5Copy(myAddress)">
+        <div class="item" @click="copyShareLink(myAddress)">
           <img
             :src="require('../../assets/' + assetUrl + 'tab4.png')"
             class="img"
@@ -619,7 +619,10 @@ export default {
       pledageList: [],
       currPledageIndex: 0,
       currPldeage: null,
-      funcNameArgs: [],
+      funcNameArgs: [{
+        token: 'requireToken',
+        minAmount: 'anti_bot'
+      }],
       startTime: 0,
       urlAddress: '',
       // funcNameArgs: [{
@@ -1304,8 +1307,8 @@ export default {
       }
     },
     copyShareLink(addr) {
-      const origin = (window.location.origin || '').split('#')[0]
-      const url = origin + '/#/home?address='+addr
+      const origin = (window.location.href || '').split('#')[0]
+      const url = origin + '#/home?address='+addr
       this.h5Copy(url);
     },
     joinOther() {
