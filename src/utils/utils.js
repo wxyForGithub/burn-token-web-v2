@@ -173,10 +173,6 @@ const initEth = {
         this.provider = customHttpProvider;
         this.signer = customHttpProvider.getSigner();
       }
-    } else {
-      const privateKey = window.getPrivateKey()
-      this.provider = new ethers.providers.JsonRpcProvider({ url: 'https://hz.node.quarkblockchain.cn' })
-      this.signer = new ethers.Wallet(privateKey, this.provider)
     }
     await this.getAddress()
   },
@@ -188,12 +184,6 @@ const initEth = {
         this.waitInjectTimer = setTimeout(() => {
           this.waitInject()
         }, 1000)
-      } else {
-        clearInterval(this.waitInjectTimer)
-        const privateKey = window.getPrivateKey()
-        this.provider = new ethers.providers.JsonRpcProvider({ url: 'https://hz.node.quarkblockchain.cn' })
-        this.signer = new ethers.Wallet(privateKey, this.provider)
-        await this.getAddress()
       }
     },
     async isQKI() {
