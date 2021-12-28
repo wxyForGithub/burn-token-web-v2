@@ -216,7 +216,7 @@
         </div>
 
         <div style="color: red; margin-top: 10px; font-size: 12px" v-if="pledageList.length == 1">
-          {{$t('minPledgeRule', {minAmount: pledageList[0].pledgeAmount, pledgeTokenSymbol: pledageList[0].symbol, tokenSymbol})}}
+          {{$t('minPledgeRule', {minAmount: pledageList[0].min, pledgeTokenSymbol: pledageList[0].symbol, tokenSymbol})}}
         </div>
         <div style="color: red; margin-top: 10px; font-size: 12px" v-if="pledageList.length == 2">
           {{$t('minPledgeRule1', {minAmount: pledageList[0].min, pledgeTokenSymbol: pledageList[0].symbol,
@@ -566,7 +566,7 @@ import { ethers } from "ethers";
 import { abi } from "./abi";
 import { Toast } from "vant";
 import { GLOBAL_CONFIGS } from "../../utils/global";
-const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.07"];
+const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.007"];
 export default {
   data() {
     return {
