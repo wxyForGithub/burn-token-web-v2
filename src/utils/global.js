@@ -27,7 +27,7 @@ const HECO_CONFIG = {
   rpcUrl:['https://http-mainnet.hecochain.com'],
   blockExplorerUrls:['https://hecoinfo.com/']
 }
-const GLOBAL_CONFIGS = QKI_CONFIG
+const GLOBAL_CONFIGS = process.env.VUE_APP_PLATFORM == "QKI" ? QKI_CONFIG : HECO_CONFIG
 export {
   GLOBAL_CONFIGS,
   QKI_CONFIG,

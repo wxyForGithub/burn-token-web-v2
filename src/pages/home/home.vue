@@ -570,13 +570,13 @@ const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.007"];
 export default {
   data() {
     return {
-      contractAddress: "", // 合约地址
-      oldContractAddress: "", // 老合约地址，用于查询升级power
-      tokenSymbol:"",//本应用token的符号
-      burnTokenSymbol:"",//质押token的符号
-      usdtDecimals: 8,
-      usdtContractAddress: "",//质押的token合约地址
-      maxDay: 7, // 最大累计的天数
+      contractAddress: process.env.VUE_APP_contractAddress, // 合约地址
+      oldContractAddress: process.env.VUE_APP_oldContractAddress, // 老合约地址，用于查询升级power
+      tokenSymbol:process.env.VUE_APP_tokenSymbol,//本应用token的符号
+      burnTokenSymbol:process.env.VUE_APP_burnTokenSymbol,//质押token的符号
+      usdtDecimals:process.env.VUE_APP_usdtDecimals,
+      usdtContractAddress: process.env.VUE_APP_usdtContractAddress,//质押的token合约地址
+      maxDay: process.env.VUE_APP_maxDay, // 最大累计的天数
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
       balance: "0.00", // 我的余额
@@ -608,13 +608,13 @@ export default {
       expectAmount: 0, // 预估收益
       decimals: 3, //精度
       config: GLOBAL_CONFIGS,
-      assetUrl: process.env.VUE_APP_PLATFORM == "QKI" ? "" : "heco/",
+      assetUrl:'',
       is_upgrade: false, // 是否可以升级
       is_airdrop: true, //是否可以空投
       show_airdrop: true, //
       show_upgrade: false,
       oldPower: 0,
-      min_gasprice: 150,
+      min_gasprice: process.env.VUE_APP_PLATFORM == "QKI"?150:3,
       dropdown: false,
       pledageList: [],
       currPledageIndex: 0,
