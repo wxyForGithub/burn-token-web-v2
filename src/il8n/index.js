@@ -4,7 +4,7 @@ const messages = {
   zh: {
     power: '我的算力',
     balance: '我的余额',
-    supply: '全网通证',
+    supply: '全网流通通证',
     burnToken: '燃烧挖矿合约',
     levelDesc: '等级说明',
     oldPower: '老合约算力',
@@ -114,6 +114,7 @@ const messages = {
     waitFeedback: '提交请求成功，等待区块确认',
     pledging: '质押中',
     permission: '权限申请中',
+    qusd:'稳定币质押，年化apy收益100%+'
   },
   en: {
     power: 'My Power',
@@ -228,6 +229,7 @@ const messages = {
     waitFeedback: 'Submit the request successfully, waiting for block confirmation',
     pledging: 'Pledeing',
     permission: 'Permission application',
+    qusd:'Stable currency pledge, annual income 100%+'
   }
 }
 Vue.use(VueI18n);

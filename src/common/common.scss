@@ -152,3 +152,19 @@ $main_color-inverse: #ffcdcd;
   background-color: transparent;
   border: none;
 }
+.base_footer {
+  text-align: center;
+  font-size: 22px;
+  color: #c0c0c0;
+  font-weight: 500;
+  margin-top: 50px;
+  img{
+    width: 28px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  a{
+    color: #FE440E;
+    text-decoration: underline;
+  }
+}

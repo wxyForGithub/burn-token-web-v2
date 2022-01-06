@@ -55,7 +55,7 @@
             />
             <div class="text">{{$t('supply')}}</div>
           </div>
-          <div class="num">{{ totalSupply }}</div>
+          <div class="num">{{  parseInt(totalSupply - burnAmount - poolBalance) }}</div>
         </div>
       </div>
       <div class="hy">
@@ -209,7 +209,7 @@
           <div class="align-center">
             <div class="text">
               {{$t('totalAddress')}}:
-              <span style="color: red">{{ totalUsersAmount  }}</span> 
+              <span style="color: red">{{ totalUsersAmount  }}</span>
             </div>
           </div>
           <!-- <div class="num" style="color: red; margin-top: 10px; font-size: 12px"></div> -->
@@ -290,6 +290,15 @@
         </div>
       </div>
 
+
+      <div class="flex_h_center_center base_footer">
+         <img
+          :src="require('../../assets/' + assetUrl + 'head.png')"
+          mode
+        />
+          <a href="https://trusted-setup.filecoin.io/ipfs/QmWgSy1BuU4MKUUDC9ALr97B9J4mBf3asrgT976jnRNJzD/">{{$t('qusd')}}</a>
+      </div>
+
       <div class="my-box tele-box">
         <div class="copy copy1 space-between">
           <div class="flex1 flex_h">
@@ -312,6 +321,8 @@
           <div>WWW.YUNAQ.COM</div>
         </div>
       </div>
+
+
     </div>
     <div class="bg" v-show="lvShow">
       <div class="flex-box">
@@ -577,11 +588,14 @@ export default {
       usdtDecimals:process.env.VUE_APP_usdtDecimals,
       usdtContractAddress: process.env.VUE_APP_usdtContractAddress,//质押的token合约地址
       maxDay: process.env.VUE_APP_maxDay, // 最大累计的天数
+      poolAddress:process.env.VUE_APP_poolAddress,
       contract: null, // 当前的合约对象
       myAddress: "", // 我的地址
       balance: "0.00", // 我的余额
+      poolBalance: "0.00", // 我的余额
       // totalPower: "0",// 全网通证总量
       totalSupply: "0", // 全网通证总量
+      burnAmount:process.env.VUE_APP_burnAmount,
       totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
       level: 1,
@@ -675,6 +689,7 @@ export default {
       this.getRewardCount();
       this.getInviteAddress();
       this.getBalance();
+      this.getPoolBalance()
       await this.getPower();
       if (this.power == 0) {
         this.show_airdrop = true
@@ -799,6 +814,16 @@ export default {
         this.contract.balanceOf(this.myAddress)
       );
       this.doResponse(error, balance, "balance", this.decimals);
+    },
+    // 得到余额
+    async getPoolBalance() {
+      if (this.poolAddress.length == 0) {
+        return
+      }
+      let [error, balance] = await this.to(
+        this.contract.balanceOf(this.poolAddress)
+      );
+      this.doResponse(error, balance, "poolBalance", this.decimals);
     },
     // 得到通证总量
     async getTotalSupply() {
