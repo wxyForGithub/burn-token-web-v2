@@ -391,7 +391,7 @@ contract burn_token is SafeMath{
                 {
                     scale = 3;
                 }
-                else if(power[invite2] < 20000 * 1e3)
+                else if(power[invite2] < 40000 * 1e3)
                 {
                     scale = 4;
                 }
@@ -486,10 +486,10 @@ contract burn_token is SafeMath{
     }
     //挖矿
     function mint() public returns (bool success){
+        update_epoch();//每次都更新基础周期值
         require(is_mint,"not start mint");
         require(power[msg.sender] > 0);//算力不能为零
         require(block.timestamp - last_miner[msg.sender] >= epoch); //距离上次挖矿大于一个周期
-        update_epoch();//每次都更新基础周期值
         uint8 scale = 20;// 万分之n
         if(power[msg.sender] < 500 * 1e3)
         {
