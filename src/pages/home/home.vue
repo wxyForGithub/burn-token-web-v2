@@ -594,7 +594,7 @@ export default {
       balance: "0.00", // 我的余额
       poolBalance: "0.00", // 我的余额
       // totalPower: "0",// 全网通证总量
-      totalSupply: "0", // 全网通证总量
+      totalSupply: env.VUE_APP_burnAmount, // 全网通证总量
       burnAmount:process.env.VUE_APP_burnAmount,
       totalUsersAmount:"0",//全网参与地址数
       power: "0", // 我的算力
