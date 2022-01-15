@@ -574,6 +574,7 @@
 // import h5Copy from '../js_sdk/junyi-h5-copy/junyi-h5-copy/junyi-h5-copy.js'
 import { h5Copy, initEth, timeUtils, vertify, Decimal } from "@/utils/utils";
 import { ethers } from "ethers";
+
 import { abi } from "./abi";
 import { Toast } from "vant";
 import { GLOBAL_CONFIGS } from "../../utils/global";
@@ -690,6 +691,7 @@ export default {
       this.getInviteAddress();
       this.getBalance();
       this.getPoolBalance()
+
       await this.getPower();
       if (this.power == 0) {
         this.show_airdrop = true
@@ -1380,12 +1382,24 @@ export default {
     receiveTimestamp(newTime) {
       if (newTime != 0) {
         this.receiveTime = this.timestampToTime(this.receiveTimestamp);
-        let tempTimestamp = Decimal.add(this.receiveTimestamp, this.epoch).toFixed()
+        let tempTimestamp = this.receiveTimestamp
         this.nextReceiveTime = this.timestampToTime(tempTimestamp);
-        this.nextReceiveTimeArray = [this.timestampToTime(tempTimestamp)]
-        for(let i = 0 ; i < this.nextReceiveTimeLen - 1; i++) {
-          tempTimestamp =  Decimal.add(Decimal.add('86400', (Decimal.div(Decimal.sub(tempTimestamp, this.startTime), 365)).toFixed().split('.')[0]), tempTimestamp).toFixed()
-          this.nextReceiveTimeArray.push(this.timestampToTime(tempTimestamp));
+        this.nextReceiveTimeArray = []
+        let unixTime = this.receiveTimestamp;
+        let new_epoch = this.epoch
+        for(let i = 0 ; i < this.nextReceiveTimeLen; i++) {
+          unixTime = unixTime + this.epoch
+          //一轮一轮的计算时间
+          while(tempTimestamp){
+            new_epoch = (unixTime - this.startTime)/365 + 86400;
+            new_epoch += new_epoch / 365 / 24;
+            new_epoch = parseInt(new_epoch)
+            if( unixTime >  this.receiveTimestamp + (new_epoch * (i + 1))){
+              this.nextReceiveTimeArray.push(this.timestampToTime(unixTime));
+              break;
+            }
+            unixTime = unixTime + 30;
+          }
         }
       }
       // 获取当前时间
