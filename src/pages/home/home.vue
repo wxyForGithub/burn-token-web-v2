@@ -571,6 +571,7 @@
 </template>
 
 <script>
+const nerdamer = require("nerdamer/all.min")
 // import h5Copy from '../js_sdk/junyi-h5-copy/junyi-h5-copy/junyi-h5-copy.js'
 import { h5Copy, initEth, timeUtils, vertify, Decimal } from "@/utils/utils";
 import { ethers } from "ethers";
@@ -705,7 +706,7 @@ export default {
         this.show_airdrop = false
       }
       
-      await this.initPledageList(this.funcNameArgs)
+      // await this.initPledageList(this.funcNameArgs)
       let {address} = this.$route.query
       if(address) {
         this.urlAddress = address
@@ -1386,20 +1387,11 @@ export default {
         this.nextReceiveTime = this.timestampToTime(tempTimestamp);
         this.nextReceiveTimeArray = []
         let unixTime = this.receiveTimestamp;
-        let new_epoch = this.epoch
         for(let i = 0 ; i < this.nextReceiveTimeLen; i++) {
-          unixTime = unixTime + this.epoch
-          //一轮一轮的计算时间
-          while(tempTimestamp){
-            new_epoch = (unixTime - this.startTime)/365 + 86400;
-            new_epoch += new_epoch / 365 / 24;
-            new_epoch = parseInt(new_epoch)
-            if( unixTime >  this.receiveTimestamp + (new_epoch * (i + 1))){
-              this.nextReceiveTimeArray.push(this.timestampToTime(unixTime));
-              break;
-            }
-            unixTime = unixTime + 30;
-          }
+          var x7 = nerdamer('(x-' + this.receiveTimestamp +')/(86400+(x-' + this.startTime + ')/365)=' + (i+1));
+          var solutions = x7.solveFor('x');
+          unixTime =(solutions[0].symbol.multiplier.num / solutions[0].symbol.multiplier.den);
+          this.nextReceiveTimeArray.push(this.timestampToTime(unixTime));
         }
       }
       // 获取当前时间
