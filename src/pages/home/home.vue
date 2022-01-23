@@ -913,6 +913,15 @@ export default {
         this.inviteAddressInput = "";
         return;
       }
+      let [err, res1] = await this.to(
+        this.contract.inviteCount(this.inviteAddressInput)
+      );
+      if(err == null) {
+        if(res1.toString() == 0) {
+          Toast('绑定的上级必须邀请人');
+          return;
+        }
+      }
 
       // TODO: 如何验证地址的合法性？？
       let [error, res] = await this.to(
@@ -1389,6 +1398,7 @@ export default {
         let unixTime = this.receiveTimestamp;
         for(let i = 0 ; i < this.nextReceiveTimeLen; i++) {
           var x7 = nerdamer('(x-' + this.receiveTimestamp +')/(86400+(x-' + this.startTime + ')/365)=' + (i+1));
+          console.log(x7.text())
           var solutions = x7.solveFor('x');
           unixTime =(solutions[0].symbol.multiplier.num / solutions[0].symbol.multiplier.den);
           this.nextReceiveTimeArray.push(this.timestampToTime(unixTime));
