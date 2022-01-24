@@ -114,7 +114,15 @@ const messages = {
     waitFeedback: '提交请求成功，等待区块确认',
     pledging: '质押中',
     permission: '权限申请中',
-    qusd:'稳定币质押，年化apy收益100%+'
+    qusd:'稳定币质押，年化apy收益100%+',
+    teamPowers: '团队总算力',
+    teams: '发展委',
+    bigTeamPowers: '大区算力',
+    smallTeamPowers: '小区算力',
+    bigTeamFriend: '大区好友',
+    smallTeamFriend: '小区好友',
+    personUnit: '名',
+    walletAddress: '钱包地址'
   },
   en: {
     power: 'My Power',
@@ -229,7 +237,15 @@ const messages = {
     waitFeedback: 'Submit the request successfully, waiting for block confirmation',
     pledging: 'Pledeing',
     permission: 'Permission application',
-    qusd:'Stable currency pledge, annual income 100%+'
+    qusd:'Stable currency pledge, annual income 100%+',
+    teamPowers: 'Team Powers',
+    teams: 'Key Opinion Leader',
+    bigTeamPowers: '大区算力',
+    smallTeamPowers: '小区算力',
+    bigTeamFriend: '大区好友',
+    smallTeamFriend: '小区好友',
+    personUnit: '名',
+    walletAddress: '钱包地址'
   }
 }
 Vue.use(VueI18n);

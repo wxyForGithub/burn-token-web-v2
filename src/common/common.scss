@@ -19,6 +19,64 @@ $font_color: #333;
 $text_placeholder_color: #737278;
 $main_color: #DC5242;
 $main_color-inverse: #ffcdcd;
+$fColor_B09B99: #B09B99;
+$fColor_F89144: #F89144;
+$fColor_ffffff: #ffffff;
+$fColor_592B0C:#592B0C;
+$fColor_E5D1CF: #E5D1CF;
+$fColor_7D7D82: #7D7D82;
+$fColor_DC5242: #DC5242;
+
+.fStyle22_B09B99{
+  font-size: $smallestFontSize;
+  color: $fColor_B09B99;
+}
+.fStyle22_DC5242{
+  font-size: $smallestFontSize;
+  color: $fColor_DC5242;
+}
+.fStyle22_7D7D82{
+  font-size: $smallestFontSize;
+  color: $fColor_7D7D82;
+}
+.fStyle24_FFFFFF{
+  font-size: $smallerFontSize;
+  color: $fColor_ffffff;
+}
+.fStyle24_E5D1CF_w6{
+  font-size: $smallerFontSize;
+  color: $fColor_E5D1CF;
+  font-weight: 600;
+}
+.fStyle26_7D7D82_w6{
+  font-size: 26px;
+  color: $fColor_7D7D82;
+  font-weight: 600;
+}
+.fStyle28_F89144_w6{
+  font-size: $normalFontSize;
+  color: $fColor_592B0C;
+  font-weight: 600;
+}
+.fStyle30_FFFFFF_w6{
+  font-size: $middleFontSize;
+  color: $fColor_ffffff;
+  font-weight: 600;
+}
+.fStyle38_FFFFFF_w6{
+  font-size: 38px;
+  color: $fColor_ffffff;
+  font-weight: 600;
+}
+.fStyle38_7D7D82{
+  font-size: 38px;
+  color: $fColor_7D7D82;
+}
+.fStyle50_FFFFFF_w6{
+  font-size: $hugeFontSize;
+  color: $fColor_ffffff;
+  font-weight: 600;
+}
 
 .smallMainTxt{
   color: $main_color;
@@ -35,7 +93,9 @@ $main_color-inverse: #ffcdcd;
   font-size: $hugeFontSize;
   font-weight: 500;
 }
-
+.aLeft{
+  text-align: left;
+}
 .flex_h{
 	display: flex;
 	flex-direction: row;
@@ -49,6 +109,12 @@ $main_color-inverse: #ffcdcd;
 	flex-direction: row;
 	align-items: center;
 }
+.flex_h_start_center{
+  display: flex;
+	flex-direction: row;
+  justify-content: flex-start;
+	align-items: center;
+}
 .flex_v_center{
 	display: flex;
 	flex-direction: column;
@@ -59,7 +125,6 @@ $main_color-inverse: #ffcdcd;
 	flex-direction: column;
 	align-items: flex-start;
 }
-
 .flex_v_end{
 	display: flex;
 	flex-direction: column;
@@ -68,6 +133,12 @@ $main_color-inverse: #ffcdcd;
 .flex_h_center_center{
 	display: flex;
 	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.flex_v_center_center{
+	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 }
@@ -92,7 +163,18 @@ $main_color-inverse: #ffcdcd;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
+.mt_30{
+  margin-top: 30px
+}
+.ml_26{
+  margin-left: 26px;
+}
+.ml_10{
+  margin-left: 10px;
+}
+.pb_20{
+  padding-bottom: 20px;
+}
 
   /*美化滚动条*/
 .scrollbar {

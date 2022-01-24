@@ -72,7 +72,34 @@
       </div>
     </div>
     <div class="cont">
-      <div class="tab space-between">
+      <div class="my-box" style="margin-top: 0">
+      <div class="flex_h_between teamWrap" @click="goto">
+        <div class="flex_h_center flex1">
+          <img
+            :src="require('../../assets/' + assetUrl + 'team.png')"
+            class="team_img"
+            mode
+          />
+          <div class="flex_v_start ml_26">
+            <div class="fStyle28_F89144_w6">{{teamPowers}}</div>
+            <div class="fStyle22_B09B99">{{$t('teamPowers')}}</div>
+          </div>
+          
+        </div>
+        <div class="flex_h_center">
+          <div class="flex_v_end">
+            <div class="fStyle28_F89144_w6" style="font-style:italic">LV{{teamLevel}}</div>
+            <div class="fStyle22_B09B99">{{$t('teams')}}</div>
+          </div>
+          <img
+            :src="require('../../assets/' + assetUrl + 'arrow.png')"
+            class="arrow_img"
+            mode
+          />
+        </div>
+      </div>
+      </div>
+      <div class="tab space-between mt_30">
         <div class="item" @click="showBurnFlag = true">
           <img
             :src="require('../../assets/' + assetUrl + 'tab1.png')"
@@ -579,6 +606,7 @@ import { ethers } from "ethers";
 import { abi } from "./abi";
 import { Toast } from "vant";
 import { GLOBAL_CONFIGS } from "../../utils/global";
+import {teamInfo} from '@/utils/request/api'
 const RATE = ["0.002", "0.005", "0.0055", "0.006", "0.0065", "0.007"];
 export default {
   data() {
@@ -641,6 +669,8 @@ export default {
       }],
       startTime: 0,
       urlAddress: '',
+      teamPowers: '0.00',
+      teamLevel: '1'
       // funcNameArgs: [{
       //   token: 'requireToken2',
       //   minAmount: 'requireToken2Num'
@@ -683,6 +713,7 @@ export default {
       );
       this.contract = contract;
       await this.getEpoch();
+      this.getTeamInfo()
       let [error, res] = await this.to(this.contract.totalUsersAmount());
       this.doResponse(error, res, "totalUsersAmount");
       this.getTotalSupply();
@@ -1257,6 +1288,24 @@ export default {
       // let par1 =
       this.expectAmount = this.accMul(this.accMul(this.power, currRate), day);
     },
+    async getTeamInfo() {
+      let res = await teamInfo(this.contractAddress, this.config.chainId, this.myAddress)
+      if(res.code == 0){
+        this.teamPowers = res.data.team_total || '0.00'
+        this.bigTeamPowers = res.data.big_total || '0.00'
+        this.smallTeamPowers = res.data.small_total || '0.00'
+        this.bigFriends = res.data.big_list.length || '0'
+        this.bigList = res.data.big_list || []
+        this.teamLevel = res.data.kol_level
+      }
+    },
+    goto() {
+      // console.log(this.)
+      this.$router.push({name: 'team', query: {
+        address: this.myAddress,
+        chain_id: this.config.chainId
+      }})
+    },
     // 十六进制转10进制
     hex2int(hex) {
       if (hex.indexOf("0x") >= 0) {
@@ -1583,6 +1632,21 @@ export default {
   position: relative;
   padding-top: 103px;
   padding-bottom: 100px;
+  .teamWrap{
+    background-color: #FFECD6;
+    border-radius: 30px;
+    padding: 36px 42px;
+    box-sizing: border-box;
+    .team_img{
+      width: 52px;
+      height: 46px;
+    }
+    .arrow_img{
+      width: 14px;
+      height: 24px;
+      margin-left: 40px;
+    }
+  }
   .tab {
     padding: 0 58px;
 
